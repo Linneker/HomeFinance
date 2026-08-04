@@ -1,0 +1,29 @@
+<Solution>
+  <Folder Name="/infra/" />
+  <Folder Name="/src/" />
+  <Folder Name="/src/Api/">
+    <Project Path="src/Api/Acme.Sistemas.HomeFinance.Api/Acme.Sistemas.HomeFinance.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Service/">
+    <Project Path="src/Service/Acme.Sistemas.Services/Acme.Sistemas.Services.csproj" />
+    <Project Path="src/Service/Acme.Sistemas.Core/Acme.Sistemas.Core.csproj" />
+    <Project Path="src/Service/Acme.Sistemas.Domain/Acme.Sistemas.Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/Data/">
+    <Project Path="src/Data/Acme.Sistemas.Infrastructure/Acme.Sistemas.Infrastructure.csproj" />
+    <Project Path="src/Data/Acme.Sistemas.Repository/Acme.Sistemas.Repository.csproj" />
+    <Project Path="src/Data/Acme.Sistemas.ExternalIntegration/Acme.Sistemas.ExternalIntegration.csproj" />
+  </Folder>
+  <Folder Name="/src/App/" />
+  <Folder Name="/src/Web/" />
+  <Folder Name="/test/" />
+  <Folder Name="/test/Unit/">
+    <Project Path="test/Unit/Acme.Sistemas.Services.UnitTest/Acme.Sistemas.Services.UnitTest.csproj" />
+  </Folder>
+  <Folder Name="/test/Integration/">
+    <Project Path="test/Integration/Acme.Sistemas.IntegrationTest/Acme.Sistemas.IntegrationTest.csproj" />
+  </Folder>
+  <Folder Name="/test/E2E/">
+    <Project Path="test/E2E/Acme.Sistemas.E2ETest/Acme.Sistemas.E2ETest.csproj" />
+  </Folder>
+</Solution>

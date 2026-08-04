@@ -1,0 +1,82 @@
+schema: spec-driven
+
+context: |
+  # HomeFinance — gestão financeira pessoal e familiar
+
+  Produto SaaS multi-tenant para terceiros, mercado brasileiro, idioma pt-BR.
+  Ajuda pessoas e famílias a controlar gastos, planejar orçamento, acompanhar
+  dívidas (empréstimo, financiamento, consórcio) e avaliar propostas de crédito.
+
+  ## Arquitetura
+
+  Segue o blueprint arquitetural obrigatório da plataforma Acme (skill
+  `acme-blueprint`, versão 2.1.0). Consultar a skill ANTES de criar solução,
+  projeto, Command/Query/Event, repositório, entidade ou migration, e antes de
+  decidir em que camada um arquivo vive.
+
+  Stack fixada pelo blueprint (não substituir sem apontar o conflito):
+  .NET em camadas com CQRS/Mediator próprio (NÃO MediatR) · PostgreSQL com SQL
+  puro via IDataConfiguration (sem ORM) · pgvector · OpenBao para segredos ·
+  MinIO para GED · RabbitMQ · OpenTelemetry · Docker/Kubernetes · MAUI
+  (mobile/desktop) · portal React · xUnit + Moq + Bogus + AutoMock.
+
+  ## Decisões de domínio já tomadas
+
+  - **Regime de competência é a visão primária**; caixa é a secundária. Todo
+    lançamento carrega DUAS datas (competência e caixa) — sempre, sem exceção.
+  - Em crédito, parcela não é despesa: só juros, tarifas e seguro são despesa;
+    amortização é redução de passivo. No consórcio, o fundo comum é poupança
+    (vira patrimônio), não gasto — só taxa de administração, fundo de reserva
+    e seguro são despesa.
+  - **Alertas são de dois tipos** e não se unificam: competência (estourou o
+    orçamento) e caixa (não vai ter saldo na data).
+  - **Tenants são individuais**, 1:1 com pessoa. Compartilhamento é assimétrico,
+    somente leitura, revogável, só o dono compartilha, com tela de consentimento
+    itemizada. Dados do SCR só entram no compartilhamento por opt-in explícito.
+  - Tenant compartilhado real (lançamento conjunto, rateio, divisão de salário)
+    é fase futura. As estruturas de dados devem nascer preparadas para ele, para
+    não exigir refatoração dos relatórios depois.
+  - **Open Finance está fora do escopo do produto.** Não propor integração.
+  - Ingestão de dados = documentos enviados pelo usuário (Registrato do BCB,
+    faturas, boletos) + entrada manual. Renda é sempre declarada, nunca inferida.
+  - Registrato do BCB não tem API: o usuário baixa o PDF pelo navegador do
+    sistema (Custom Tabs / SFSafariViewController — NUNCA WebView embutida, e
+    nunca pedir credencial gov.br) e envia ao app. Serve para DESCOBERTA e
+    AUDITORIA de dívidas, não para extrato: traz posição mensal por instituição
+    e modalidade, sem parcela a parcela e sem taxa contratada.
+  - OCR usa Gemini 2.5 Flash, sempre com validação por checksum (soma dos itens
+    contra o total impresso). Confiança baixa vai para fila de revisão humana e
+    nunca entra em relatório sem conferência.
+
+  ## Restrições inegociáveis
+
+  - **Isolamento entre tenants é enforced no banco** via Row Level Security do
+    PostgreSQL. Com SQL puro não existe filtro global de query: um WHERE
+    esquecido vazaria dados financeiros entre famílias. Toda tabela com dado de
+    tenant tem policy, e há teste automatizado de leitura cruzada.
+  - **O módulo de aconselhamento de crédito nunca pode ser monetizado por
+    indicação, comissão ou marketplace.** Isso corromperia a análise.
+  - O aconselhamento nunca recomenda contratar. Ele informa, decompõe a análise
+    em critérios explícitos e sempre orienta procurar um especialista. Um
+    percentual só aparece acompanhado da decomposição que o gerou.
+  - Dados do SCR (inadimplência, prejuízo) são os mais sensíveis do sistema:
+    uso estrito pelo titular, nunca para avaliar terceiros.
+  - LGPD: base legal e consentimento registrados, política de retenção, e
+    exclusão de conta que cascateia até os objetos no MinIO.
+
+rules:
+  proposal:
+    - Escopo é sempre de UMA fase. Fases futuras entram como menção de uma linha
+      em "fora de escopo", nunca detalhadas.
+    - Declarar explicitamente o que NÃO entra, para conter crescimento de escopo.
+  specs:
+    - Requisitos verificáveis, com cenários concretos incluindo os de erro.
+    - Onde houver dado monetário, o cenário deve deixar claro se fala de
+      competência ou de caixa.
+  design:
+    - Apontar como a decisão se encaixa no blueprint Acme e sinalizar qualquer
+      ponto de atrito com ele.
+    - Modelo de dados deve indicar a estratégia de isolamento por tenant.
+  tasks:
+    - Quebrar em passos de no máximo meio dia de trabalho.
+    - Tarefas de migration e de teste são explícitas, nunca implícitas.

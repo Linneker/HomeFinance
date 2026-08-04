@@ -1,0 +1,39 @@
+## .NET
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+.vs/
+TestResults/
+*.trx
+*.coverage
+*.nupkg
+
+## Segredos — nunca versionar (regra 15 do blueprint Acme)
+.env
+*.env
+!.env.example
+appsettings.Local.json
+appsettings.*.Local.json
+secrets.json
+
+## Cache local
+cache.db
+cache.db-log
+
+## Node / portal React
+node_modules/
+dist/
+.vite/
+*.log
+
+## MAUI
+*.binlog
+Platforms/**/bin/
+Platforms/**/obj/
+
+## SO
+.DS_Store
+Thumbs.db

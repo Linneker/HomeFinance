@@ -1,0 +1,27 @@
+# Artefatos do host nunca entram no contexto de build.
+# Sem isto, o obj/project.assets.json gerado no Windows viaja para o container e leva junto
+# caminhos de fallback de pacote da máquina (ex.: G:\...\NuGetPackages), quebrando o publish
+# com "Unable to find fallback package folder".
+**/bin/
+**/obj/
+**/.vs/
+**/TestResults/
+
+**/node_modules/
+**/dist/
+
+.git/
+.github/
+.claude/
+.qwen/
+openspec/
+
+**/.env
+**/*.user
+**/*.suo
+**/cache.db
+
+infra/
+test/
+README.md
+CLAUDE.md
