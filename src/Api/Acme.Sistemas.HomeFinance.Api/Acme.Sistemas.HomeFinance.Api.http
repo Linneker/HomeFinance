@@ -1,0 +1,6 @@
+@Acme.Sistemas.HomeFinance.Api_HostAddress = http://localhost:5286
+
+GET {{Acme.Sistemas.HomeFinance.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
