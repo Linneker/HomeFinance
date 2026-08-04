@@ -1,0 +1,160 @@
+# Stack local do HomeFinance.
+# Credenciais aqui são de desenvolvimento e vêm de variáveis de ambiente (.env, não versionado).
+# Em qualquer ambiente que não seja a máquina do dev, os segredos são resolvidos via OpenBao —
+# ver regra 15 do blueprint Acme.
+
+name: homefinance
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: homefinance-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-homefinance}
+      POSTGRES_USER: ${POSTGRES_USER:-homefinance_owner}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dev_only_change_me}
+    ports:
+      - "${POSTGRES_PORT:-57432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-homefinance_owner} -d ${POSTGRES_DB:-homefinance}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  openbao:
+    image: openbao/openbao:latest
+    container_name: homefinance-openbao
+    cap_add:
+      - IPC_LOCK
+    environment:
+      BAO_DEV_ROOT_TOKEN_ID: ${OPENBAO_DEV_TOKEN:-dev-root-token}
+      BAO_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+    command: server -dev
+    ports:
+      - "${OPENBAO_PORT:-57200}:8200"
+    healthcheck:
+      # BAO_ADDR é obrigatório: sem ele o cliente tenta https://127.0.0.1:8200 e falha no TLS,
+      # marcando como unhealthy um cofre que está perfeitamente no ar.
+      test: ["CMD-SHELL", "BAO_ADDR=http://127.0.0.1:8200 bao status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    container_name: homefinance-minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-dev_only_change_me}
+    command: server /data --console-address ":9001"
+    ports:
+      - "${MINIO_PORT:-57900}:9000"
+      - "${MINIO_CONSOLE_PORT:-57901}:9001"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: homefinance-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-homefinance}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-dev_only_change_me}
+    ports:
+      - "${RABBITMQ_PORT:-57672}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-57673}:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: homefinance-otel-collector
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes:
+      - ../observability/otel-collector/config.yaml:/etc/otel/config.yaml:ro
+    ports:
+      - "${OTLP_GRPC_PORT:-57317}:4317"
+      - "${OTLP_HTTP_PORT:-57318}:4318"
+    depends_on:
+      - prometheus
+      - loki
+      - tempo
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: homefinance-prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --web.enable-otlp-receiver
+    volumes:
+      - ../observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "${PROMETHEUS_PORT:-57090}:9090"
+    restart: unless-stopped
+
+  loki:
+    image: grafana/loki:latest
+    container_name: homefinance-loki
+    command: -config.file=/etc/loki/config.yaml
+    volumes:
+      - ../observability/loki/config.yaml:/etc/loki/config.yaml:ro
+      - loki-data:/loki
+    ports:
+      - "${LOKI_PORT:-57100}:3100"
+    restart: unless-stopped
+
+  tempo:
+    image: grafana/tempo:latest
+    container_name: homefinance-tempo
+    command: -config.file=/etc/tempo/config.yaml
+    volumes:
+      - ../observability/tempo/config.yaml:/etc/tempo/config.yaml:ro
+      - tempo-data:/var/tempo
+    ports:
+      - "${TEMPO_PORT:-57210}:3200"
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: homefinance-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-dev_only_change_me}
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+    volumes:
+      - ../observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ../observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "${GRAFANA_PORT:-57000}:3000"
+    depends_on:
+      - prometheus
+      - loki
+      - tempo
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  minio-data:
+  rabbitmq-data:
+  prometheus-data:
+  loki-data:
+  tempo-data:
+  grafana-data:

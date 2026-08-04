@@ -1,0 +1,161 @@
+# Manifesto da Api do HomeFinance.
+#   kubectl apply -f infra/k8s/v1/deployment.yaml
+#
+# O Secret abaixo NÃO carrega valor real: em cluster de verdade o token do OpenBao chega por
+# External Secrets ou pela identidade da workload. Aqui ele existe para o manifesto ser
+# aplicável em kind sem editar nada — o valor é placeholder e a chave é sobrescrita no deploy.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: homefinance
+  labels:
+    app.kubernetes.io/part-of: homefinance
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homefinance-api-config
+  namespace: homefinance
+  labels:
+    app.kubernetes.io/name: homefinance-api
+    app.kubernetes.io/part-of: homefinance
+data:
+  ASPNETCORE_ENVIRONMENT: "Production"
+  OpenTelemetry__Endpoint: "http://otel-collector.observability.svc.cluster.local:4317"
+  OpenBao__Endereco: "http://openbao.homefinance.svc.cluster.local:8200"
+  OpenBao__Mount: "secret"
+  OpenBao__Caminho: "homefinance"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: homefinance-api-secrets
+  namespace: homefinance
+  labels:
+    app.kubernetes.io/name: homefinance-api
+    app.kubernetes.io/part-of: homefinance
+type: Opaque
+stringData:
+  # Placeholder — substituído no deploy real. Nenhuma connection string vive aqui: elas são
+  # lidas do OpenBao em runtime, e este token é apenas a credencial de acesso ao cofre.
+  OPENBAO_TOKEN: "REPLACE_AT_DEPLOY"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homefinance-api
+  namespace: homefinance
+  labels:
+    app.kubernetes.io/name: homefinance-api
+    app.kubernetes.io/part-of: homefinance
+    app.kubernetes.io/version: v1
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: homefinance-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: homefinance-api
+        app.kubernetes.io/part-of: homefinance
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 64198
+        fsGroup: 64198
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: api
+          image: acme/homefinance-api:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: homefinance-api-config
+          env:
+            - name: OPENBAO_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: homefinance-api-secrets
+                  key: OPENBAO_TOKEN
+          resources:
+            requests:
+              cpu: 100m
+              memory: 192Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          startupProbe:
+            # A Api não sobe sem o cofre responder; o startup generoso evita reinício em
+            # cascata quando o OpenBao demora a ficar pronto.
+            httpGet:
+              path: /health/live
+              port: http
+            periodSeconds: 5
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+            periodSeconds: 10
+            failureThreshold: 3
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        # readOnlyRootFilesystem exige um writable para o runtime do .NET.
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homefinance-api
+  namespace: homefinance
+  labels:
+    app.kubernetes.io/name: homefinance-api
+    app.kubernetes.io/part-of: homefinance
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: homefinance-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30080
+      protocol: TCP
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: homefinance-api
+  namespace: homefinance
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: homefinance-api
