@@ -1,3 +1,4 @@
+using Acme.Sistemas.Services.V1.Classificacao;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Acme.Sistemas.Services;
@@ -11,6 +12,10 @@ public static class ServicesServiceCollecation
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.TryAddTimeProvider();
+
+        // Serviço de domínio compartilhado entre Commands: a classificação roda ao gravar
+        // lançamento e ao corrigir a categoria à mão.
+        services.AddScoped<IClassificacaoService, ClassificacaoService>();
 
         // Handlers e behaviors são descobertos por AddCore(assembly) no Program.cs.
         return services;

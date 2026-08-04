@@ -1,6 +1,8 @@
+using Acme.Sistemas.Domain.Entities.Classificacao;
 using Acme.Sistemas.Domain.Entities.Lancamentos;
 using Acme.Sistemas.Domain.Enums;
 using Acme.Sistemas.Domain.Interfaces.Repository;
+using Acme.Sistemas.Services.V1.Classificacao;
 using Acme.Sistemas.Services.V1.Lancamentos.Command.AlterarLancamento;
 using Acme.Sistemas.Services.V1.Lancamentos.Command.CriarLancamento;
 using Acme.Sistemas.Services.V1.Lancamentos.Command.RemoverLancamento;
@@ -52,6 +54,25 @@ public sealed class LancamentoTests
         return (lancamentos, gravado);
     }
 
+    /// <summary>Por padrão nenhuma regra casa: a classificação automática tem grupo próprio.</summary>
+    private static Mock<IClassificacaoService> Classificador(Guid? categoria = null)
+    {
+        var classificacao = new Mock<IClassificacaoService>();
+        classificacao.Setup(s => s.ClassificarAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ResultadoDaClassificacao(
+                categoria is null
+                    ? null
+                    : new RegraClassificacaoEntity
+                    {
+                        Id = Guid.CreateVersion7(),
+                        TenantId = Tenant,
+                        Padrao = "MERCADO",
+                        CategoriaId = categoria.Value,
+                        CriadoEm = DateTimeOffset.UtcNow,
+                    }));
+        return classificacao;
+    }
+
     private static Mock<ICategoriaWriteRepository> Categorias(bool existe = true)
     {
         var categorias = new Mock<ICategoriaWriteRepository>();
@@ -82,7 +103,7 @@ public sealed class LancamentoTests
     {
         var (lancamentos, gravado) = Repositorio();
         var handler = new CriarLancamentoCommandHandler(
-            lancamentos.Object, Categorias().Object, new RelogioFixo());
+            lancamentos.Object, Categorias().Object, Classificador().Object, new RelogioFixo());
 
         var resultado = await handler.HandleAsync(
             Comando(caixa: new DateOnly(2026, 7, 3)), CancellationToken.None);
@@ -99,7 +120,7 @@ public sealed class LancamentoTests
     {
         var (lancamentos, gravado) = Repositorio();
         var handler = new CriarLancamentoCommandHandler(
-            lancamentos.Object, Categorias().Object, new RelogioFixo());
+            lancamentos.Object, Categorias().Object, Classificador().Object, new RelogioFixo());
 
         // Conta de luz do consumo de julho vencendo em 10/08: é o caso que justifica guardar
         // as duas datas. Com uma só, ou o mês de julho perde o gasto ou agosto ganha um que
@@ -118,7 +139,7 @@ public sealed class LancamentoTests
     {
         var (lancamentos, _) = Repositorio();
         var handler = new CriarLancamentoCommandHandler(
-            lancamentos.Object, Categorias().Object, new RelogioFixo());
+            lancamentos.Object, Categorias().Object, Classificador().Object, new RelogioFixo());
 
         var semCaixa = await handler.HandleAsync(
             Comando() with { DataCaixa = null }, CancellationToken.None);
@@ -145,7 +166,7 @@ public sealed class LancamentoTests
     {
         var (lancamentos, _) = Repositorio();
         var handler = new CriarLancamentoCommandHandler(
-            lancamentos.Object, Categorias(existe: false).Object, new RelogioFixo());
+            lancamentos.Object, Categorias(existe: false).Object, Classificador().Object, new RelogioFixo());
 
         var resultado = await handler.HandleAsync(
             Comando(categoria: Alimentacao), CancellationToken.None);
@@ -160,7 +181,7 @@ public sealed class LancamentoTests
     {
         var (lancamentos, gravado) = Repositorio();
         var handler = new CriarLancamentoCommandHandler(
-            lancamentos.Object, Categorias().Object, new RelogioFixo());
+            lancamentos.Object, Categorias().Object, Classificador().Object, new RelogioFixo());
 
         await handler.HandleAsync(Comando(), CancellationToken.None);
 
@@ -174,7 +195,7 @@ public sealed class LancamentoTests
     {
         var (lancamentos, gravado) = Repositorio();
         var handler = new CriarLancamentoCommandHandler(
-            lancamentos.Object, Categorias().Object, new RelogioFixo());
+            lancamentos.Object, Categorias().Object, Classificador().Object, new RelogioFixo());
 
         await handler.HandleAsync(Comando(), CancellationToken.None);
 
@@ -189,7 +210,7 @@ public sealed class LancamentoTests
     {
         var (lancamentos, gravado) = Repositorio();
         var handler = new CriarLancamentoCommandHandler(
-            lancamentos.Object, Categorias().Object, new RelogioFixo());
+            lancamentos.Object, Categorias().Object, Classificador().Object, new RelogioFixo());
 
         // Compra de R$ 300,00 em 20/07, três parcelas vencendo em agosto, setembro e outubro.
         var resultado = await handler.HandleAsync(
@@ -256,7 +277,7 @@ public sealed class LancamentoTests
     {
         var (lancamentos, gravado) = Repositorio(semelhantes: 1);
         var handler = new CriarLancamentoCommandHandler(
-            lancamentos.Object, Categorias().Object, new RelogioFixo());
+            lancamentos.Object, Categorias().Object, Classificador().Object, new RelogioFixo());
 
         var resultado = await handler.HandleAsync(Comando(valor: 280m), CancellationToken.None);
 
@@ -272,7 +293,7 @@ public sealed class LancamentoTests
     {
         var (lancamentos, gravado) = Repositorio(semelhantes: 1);
         var handler = new CriarLancamentoCommandHandler(
-            lancamentos.Object, Categorias().Object, new RelogioFixo());
+            lancamentos.Object, Categorias().Object, Classificador().Object, new RelogioFixo());
 
         var resultado = await handler.HandleAsync(
             Comando(valor: 280m, confirmou: true), CancellationToken.None);

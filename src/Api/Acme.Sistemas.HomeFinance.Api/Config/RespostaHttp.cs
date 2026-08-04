@@ -41,6 +41,7 @@ public static class RespostaHttp
         "tenant_nao_encontrado",
         "lancamento_nao_encontrado",
         "recorrencia_nao_encontrada",
+        "regra_nao_encontrada",
     ];
 
     public static IResult Falha(IReadOnlyList<Error> erros)

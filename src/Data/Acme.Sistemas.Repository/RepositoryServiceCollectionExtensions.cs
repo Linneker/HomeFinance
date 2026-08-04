@@ -2,6 +2,7 @@ using Acme.Sistemas.Domain.Interfaces.Repository;
 using Acme.Sistemas.Repository.Repositories.V1.Categoria;
 using Acme.Sistemas.Repository.Repositories.V1.Lancamento;
 using Acme.Sistemas.Repository.Repositories.V1.Recorrencia;
+using Acme.Sistemas.Repository.Repositories.V1.RegraClassificacao;
 using Acme.Sistemas.Repository.Repositories.V1.Tenant;
 using Acme.Sistemas.Repository.Repositories.V1.Usuario;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,8 @@ public static class RepositoryServiceCollectionExtensions
         services.AddScoped<ILancamentoParticipacaoReadRepository, LancamentoParticipacaoReadRepository>();
         services.AddScoped<IRecorrenciaReadRepository, RecorrenciaReadRepository>();
         services.AddScoped<IRecorrenciaWriteRepository, RecorrenciaWriteRepository>();
+        services.AddScoped<IRegraClassificacaoReadRepository, RegraClassificacaoReadRepository>();
+        services.AddScoped<IRegraClassificacaoWriteRepository, RegraClassificacaoWriteRepository>();
 
         return services;
     }

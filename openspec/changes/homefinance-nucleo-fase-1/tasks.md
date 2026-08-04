@@ -71,16 +71,16 @@
 
 ## 6. Classificação
 
-- [ ] 6.1 `Domain`: entidade `RegraClassificacaoEntity` e a interface de repositório
-- [ ] 6.2 `Repository`: repositórios Read/Write de regra de classificação
-- [ ] 6.3 `Services`: `ClassificacaoService` com normalização de descrição e precedência por especificidade e recência
-- [ ] 6.4 `Services`: aplicação das regras na criação do lançamento, marcando como pendente quando nenhuma casar
-- [ ] 6.5 `Services`: quinteto CQRS de `ClassificarLancamento`, gravando a origem manual da categoria
-- [ ] 6.6 `Services`: criação opcional de regra a partir da correção manual, e substituição da regra anterior quando a categoria for trocada
-- [ ] 6.7 `Services`: garantir que aplicação de regra nunca sobrescreve categoria de origem manual
-- [ ] 6.8 `Services`: quinteto CQRS de alteração e remoção de regra, e Query de listagem
-- [ ] 6.9 `Api`: endpoints `V1` de classificação e de gestão de regras
-- [ ] 6.10 Testes unitários: regra casa, nenhuma regra casa, duas regras casam, recusa de criar regra e preservação da classificação manual
+- [x] 6.1 `Domain`: entidade `RegraClassificacaoEntity` e a interface de repositório
+- [x] 6.2 `Repository`: repositórios Read/Write de regra de classificação
+- [x] 6.3 `Services`: `ClassificacaoService` com normalização de descrição e precedência por especificidade e recência
+- [x] 6.4 `Services`: aplicação das regras na criação do lançamento, marcando como pendente quando nenhuma casar
+- [x] 6.5 `Services`: quinteto CQRS de `ClassificarLancamento`, gravando a origem manual da categoria
+- [x] 6.6 `Services`: criação opcional de regra a partir da correção manual, e substituição da regra anterior quando a categoria for trocada
+- [x] 6.7 `Services`: garantir que aplicação de regra nunca sobrescreve categoria de origem manual
+- [x] 6.8 `Services`: quinteto CQRS de alteração e remoção de regra, e Query de listagem
+- [x] 6.9 `Api`: endpoints `V1` de classificação e de gestão de regras
+- [x] 6.10 Testes unitários: regra casa, nenhuma regra casa, duas regras casam, recusa de criar regra e preservação da classificação manual
 
 ## 7. Planejamento orçamentário
 

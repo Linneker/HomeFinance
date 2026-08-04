@@ -3,6 +3,7 @@ using Acme.Sistemas.Core.Response.Erros;
 using Acme.Sistemas.Domain.Entities.Lancamentos;
 using Acme.Sistemas.Domain.Enums;
 using Acme.Sistemas.Domain.Interfaces.Repository;
+using Acme.Sistemas.Services.V1.Classificacao;
 
 namespace Acme.Sistemas.Services.V1.Lancamentos.Command.CriarLancamento;
 
@@ -18,6 +19,7 @@ namespace Acme.Sistemas.Services.V1.Lancamentos.Command.CriarLancamento;
 public sealed class CriarLancamentoCommandHandler(
     ILancamentoWriteRepository lancamentos,
     ICategoriaWriteRepository categorias,
+    IClassificacaoService classificacao,
     TimeProvider relogio)
     : IRequestHandler<CriarLancamentoCommand, CriarLancamentoCommandResult>
 {
@@ -61,6 +63,20 @@ public sealed class CriarLancamentoCommandHandler(
             }
         }
 
+        // Categoria informada é escolha da pessoa e vence qualquer regra. Só quando ela não
+        // vem é que as regras do tenant entram — classificação automática nunca disputa com
+        // decisão manual.
+        var categoriaId = request.CategoriaId;
+        var origem = OrigemClassificacao.Manual;
+
+        if (categoriaId is null)
+        {
+            var sugestao = await classificacao.ClassificarAsync(descricao, cancellationToken);
+
+            categoriaId = sugestao.CategoriaId;
+            origem = sugestao.Classificou ? OrigemClassificacao.Regra : OrigemClassificacao.Pendente;
+        }
+
         var agora = relogio.GetUtcNow();
         var parcelado = request.Parcelas > 1;
         var grupo = parcelado ? Guid.CreateVersion7() : (Guid?)null;
@@ -84,10 +100,8 @@ public sealed class CriarLancamentoCommandHandler(
                 DataCompetencia = competencia,
                 DataCaixa = vencimentos[indice],
 
-                CategoriaId = request.CategoriaId,
-                OrigemClassificacao = request.CategoriaId is null
-                    ? OrigemClassificacao.Pendente
-                    : OrigemClassificacao.Manual,
+                CategoriaId = categoriaId,
+                OrigemClassificacao = origem,
                 GrupoParcelamentoId = grupo,
                 ParcelaNumero = parcelado ? indice + 1 : null,
                 ParcelaTotal = parcelado ? request.Parcelas : null,
