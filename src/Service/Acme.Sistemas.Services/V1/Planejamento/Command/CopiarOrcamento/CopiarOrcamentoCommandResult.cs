@@ -2,7 +2,7 @@ using Acme.Sistemas.Core.Response.Erros;
 
 namespace Acme.Sistemas.Services.V1.Planejamento.Command.CopiarOrcamento;
 
-public sealed record CopiarOrcamentoCommandResult
+public sealed record CopiarOrcamentoCommandResult : IResultadoRecusavel<CopiarOrcamentoCommandResult>
 {
     public bool Sucesso { get; init; }
 
@@ -58,4 +58,7 @@ public sealed record CopiarOrcamentoCommandResult
 
     public static CopiarOrcamentoCommandResult Recusado(Error erro) =>
         new() { Sucesso = false, Erros = [erro] };
+
+    /// <summary>Ponto de recusa usado pelos behaviors genéricos do pipeline.</summary>
+    static CopiarOrcamentoCommandResult IResultadoRecusavel<CopiarOrcamentoCommandResult>.Recusar(Error erro) => Recusado(erro);
 }

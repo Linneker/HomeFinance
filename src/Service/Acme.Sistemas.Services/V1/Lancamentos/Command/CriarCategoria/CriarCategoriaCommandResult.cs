@@ -2,7 +2,7 @@ using Acme.Sistemas.Core.Response.Erros;
 
 namespace Acme.Sistemas.Services.V1.Lancamentos.Command.CriarCategoria;
 
-public sealed record CriarCategoriaCommandResult
+public sealed record CriarCategoriaCommandResult : IResultadoRecusavel<CriarCategoriaCommandResult>
 {
     public bool Sucesso { get; init; }
 
@@ -15,4 +15,7 @@ public sealed record CriarCategoriaCommandResult
 
     public static CriarCategoriaCommandResult Recusada(Error erro) =>
         new() { Sucesso = false, Erros = [erro] };
+
+    /// <summary>Ponto de recusa usado pelos behaviors genéricos do pipeline.</summary>
+    static CriarCategoriaCommandResult IResultadoRecusavel<CriarCategoriaCommandResult>.Recusar(Error erro) => Recusada(erro);
 }

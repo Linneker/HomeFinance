@@ -13,4 +13,4 @@ public sealed record CriarRecorrenciaCommand(
     decimal Valor,
     int DiaDoMes,
     Guid? CategoriaId,
-    DateOnly? Inicio) : IRequest<CriarRecorrenciaCommandResult>;
+    DateOnly? Inicio) : IRequest<CriarRecorrenciaCommandResult>, IEscritaFinanceira;

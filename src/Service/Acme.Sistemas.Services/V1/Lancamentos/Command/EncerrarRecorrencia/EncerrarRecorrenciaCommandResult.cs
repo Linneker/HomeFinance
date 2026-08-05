@@ -2,7 +2,7 @@ using Acme.Sistemas.Core.Response.Erros;
 
 namespace Acme.Sistemas.Services.V1.Lancamentos.Command.EncerrarRecorrencia;
 
-public sealed record EncerrarRecorrenciaCommandResult
+public sealed record EncerrarRecorrenciaCommandResult : IResultadoRecusavel<EncerrarRecorrenciaCommandResult>
 {
     public bool Sucesso { get; init; }
 
@@ -16,4 +16,7 @@ public sealed record EncerrarRecorrenciaCommandResult
 
     public static EncerrarRecorrenciaCommandResult Recusada(Error erro) =>
         new() { Sucesso = false, Erros = [erro] };
+
+    /// <summary>Ponto de recusa usado pelos behaviors genéricos do pipeline.</summary>
+    static EncerrarRecorrenciaCommandResult IResultadoRecusavel<EncerrarRecorrenciaCommandResult>.Recusar(Error erro) => Recusada(erro);
 }

@@ -10,4 +10,5 @@ public sealed record ClassificarLancamentoCommand(
     Guid TenantId,
     Guid LancamentoId,
     Guid CategoriaId,
-    bool CriarRegra = false) : IRequest<ClassificarLancamentoCommandResult>;
+    bool CriarRegra = false)
+    : IRequest<ClassificarLancamentoCommandResult>, IEscritaFinanceira;

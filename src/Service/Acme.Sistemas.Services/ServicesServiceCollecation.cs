@@ -1,5 +1,7 @@
 using Acme.Sistemas.Services.V1.Alertas;
 using Acme.Sistemas.Services.V1.Classificacao;
+using Acme.Sistemas.Services.V1.Onboarding;
+using Acme.Sistemas.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Acme.Sistemas.Services;
@@ -21,6 +23,14 @@ public static class ServicesServiceCollecation
         // Chamado pelos behaviors de lançamento e pela rotina diária de caixa.
         services.AddScoped<IAlertaService, AlertaService>();
         services.AddScoped<RotinaDeAlertasDeCaixa>();
+
+        services.AddScoped<IOnboardingService, OnboardingService>();
+
+        // Registrado antes da varredura de assembly: o primeiro behavior registrado é o mais
+        // externo, e a recusa por onboarding precisa acontecer antes do handler e antes dos
+        // behaviors que reavaliam alertas — avaliar um estado que não foi gravado emitiria
+        // aviso por uma operação que a pessoa não conseguiu concluir.
+        services.AddPipelineBehavior(typeof(OnboardingBehavior<,>));
 
         // Handlers e behaviors são descobertos por AddCore(assembly) no Program.cs.
         return services;

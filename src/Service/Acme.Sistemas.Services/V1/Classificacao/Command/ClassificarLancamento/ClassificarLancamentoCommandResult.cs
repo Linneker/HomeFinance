@@ -3,7 +3,7 @@ using Acme.Sistemas.Core.Response.Erros;
 namespace Acme.Sistemas.Services.V1.Classificacao.Command.ClassificarLancamento;
 
 /// <param name="CompetenciaAfetada">Mês cujo consumo de orçamento passa a contar este gasto.</param>
-public sealed record ClassificarLancamentoCommandResult
+public sealed record ClassificarLancamentoCommandResult : IResultadoRecusavel<ClassificarLancamentoCommandResult>
 {
     public bool Sucesso { get; init; }
 
@@ -31,4 +31,7 @@ public sealed record ClassificarLancamentoCommandResult
 
     public static ClassificarLancamentoCommandResult Recusado(Error erro) =>
         new() { Sucesso = false, Erros = [erro] };
+
+    /// <summary>Ponto de recusa usado pelos behaviors genéricos do pipeline.</summary>
+    static ClassificarLancamentoCommandResult IResultadoRecusavel<ClassificarLancamentoCommandResult>.Recusar(Error erro) => Recusado(erro);
 }

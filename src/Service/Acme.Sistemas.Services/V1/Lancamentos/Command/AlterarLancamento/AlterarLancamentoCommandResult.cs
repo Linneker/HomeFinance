@@ -6,7 +6,7 @@ namespace Acme.Sistemas.Services.V1.Lancamentos.Command.AlterarLancamento;
 /// Meses cujo consumo de orçamento precisa ser reapurado. São dois quando a alteração mudou a
 /// competência: o mês de onde o valor saiu e o mês para onde foi.
 /// </param>
-public sealed record AlterarLancamentoCommandResult
+public sealed record AlterarLancamentoCommandResult : IResultadoRecusavel<AlterarLancamentoCommandResult>
 {
     public bool Sucesso { get; init; }
 
@@ -27,4 +27,7 @@ public sealed record AlterarLancamentoCommandResult
 
     public static AlterarLancamentoCommandResult Recusado(Error erro) =>
         new() { Sucesso = false, Erros = [erro] };
+
+    /// <summary>Ponto de recusa usado pelos behaviors genéricos do pipeline.</summary>
+    static AlterarLancamentoCommandResult IResultadoRecusavel<AlterarLancamentoCommandResult>.Recusar(Error erro) => Recusado(erro);
 }

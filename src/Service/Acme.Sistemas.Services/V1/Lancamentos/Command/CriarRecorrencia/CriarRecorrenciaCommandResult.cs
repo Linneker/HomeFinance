@@ -2,7 +2,7 @@ using Acme.Sistemas.Core.Response.Erros;
 
 namespace Acme.Sistemas.Services.V1.Lancamentos.Command.CriarRecorrencia;
 
-public sealed record CriarRecorrenciaCommandResult
+public sealed record CriarRecorrenciaCommandResult : IResultadoRecusavel<CriarRecorrenciaCommandResult>
 {
     public bool Sucesso { get; init; }
 
@@ -18,4 +18,7 @@ public sealed record CriarRecorrenciaCommandResult
 
     public static CriarRecorrenciaCommandResult Recusada(Error erro) =>
         new() { Sucesso = false, Erros = [erro] };
+
+    /// <summary>Ponto de recusa usado pelos behaviors genéricos do pipeline.</summary>
+    static CriarRecorrenciaCommandResult IResultadoRecusavel<CriarRecorrenciaCommandResult>.Recusar(Error erro) => Recusada(erro);
 }

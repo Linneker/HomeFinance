@@ -2,7 +2,7 @@ using Acme.Sistemas.Core.Response.Erros;
 
 namespace Acme.Sistemas.Services.V1.Lancamentos.Command.RemoverLancamento;
 
-public sealed record RemoverLancamentoCommandResult
+public sealed record RemoverLancamentoCommandResult : IResultadoRecusavel<RemoverLancamentoCommandResult>
 {
     public bool Sucesso { get; init; }
 
@@ -18,4 +18,7 @@ public sealed record RemoverLancamentoCommandResult
 
     public static RemoverLancamentoCommandResult Recusado(Error erro) =>
         new() { Sucesso = false, Erros = [erro] };
+
+    /// <summary>Ponto de recusa usado pelos behaviors genéricos do pipeline.</summary>
+    static RemoverLancamentoCommandResult IResultadoRecusavel<RemoverLancamentoCommandResult>.Recusar(Error erro) => Recusado(erro);
 }

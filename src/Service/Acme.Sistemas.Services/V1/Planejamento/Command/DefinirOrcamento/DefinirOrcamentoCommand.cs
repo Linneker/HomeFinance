@@ -9,4 +9,4 @@ public sealed record DefinirOrcamentoCommand(
     Guid TenantId,
     Guid CategoriaId,
     DateOnly Competencia,
-    decimal ValorPlanejado) : IRequest<DefinirOrcamentoCommandResult>;
+    decimal ValorPlanejado) : IRequest<DefinirOrcamentoCommandResult>, IEscritaFinanceira;

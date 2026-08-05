@@ -2,7 +2,7 @@ using Acme.Sistemas.Core.Response.Erros;
 
 namespace Acme.Sistemas.Services.V1.Planejamento.Command.DefinirOrcamento;
 
-public sealed record DefinirOrcamentoCommandResult
+public sealed record DefinirOrcamentoCommandResult : IResultadoRecusavel<DefinirOrcamentoCommandResult>
 {
     public bool Sucesso { get; init; }
 
@@ -44,4 +44,7 @@ public sealed record DefinirOrcamentoCommandResult
 
     public static DefinirOrcamentoCommandResult Recusado(Error erro) =>
         new() { Sucesso = false, Erros = [erro] };
+
+    /// <summary>Ponto de recusa usado pelos behaviors genéricos do pipeline.</summary>
+    static DefinirOrcamentoCommandResult IResultadoRecusavel<DefinirOrcamentoCommandResult>.Recusar(Error erro) => Recusado(erro);
 }

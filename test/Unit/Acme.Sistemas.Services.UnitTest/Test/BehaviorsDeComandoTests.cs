@@ -23,6 +23,7 @@ using Acme.Sistemas.Services.V1.Planejamento.Command.AlterarFonteRenda;
 using Acme.Sistemas.Services.V1.Planejamento.Command.CadastrarFonteRenda;
 using Acme.Sistemas.Services.V1.Planejamento.Command.CopiarOrcamento;
 using Acme.Sistemas.Services.V1.Planejamento.Command.DefinirOrcamento;
+using Acme.Sistemas.Services.V1.Onboarding;
 using Acme.Sistemas.Services.V1.Planejamento.Command.RemoverFonteRenda;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
@@ -217,11 +218,16 @@ public sealed class BehaviorsDeComandoTests
 
     // ---------------------------------------------------------------- planejamento
 
+    /// <summary>
+    /// Cadastrar renda é a ação que destrava o produto: o requisito bloqueante do onboarding é
+    /// cumprido aqui, e só quando a gravação deu certo.
+    /// </summary>
     [Fact]
-    public async Task Cadastrar_renda_registra_sucesso_e_recusa()
+    public async Task Cadastrar_renda_cumpre_o_requisito_de_onboarding()
     {
+        var onboarding = new Mock<IOnboardingService>();
         var behavior = new CadastrarFonteRendaCommandBehavior(
-            Log<CadastrarFonteRendaCommandBehavior>());
+            Log<CadastrarFonteRendaCommandBehavior>(), onboarding.Object);
         var comando = new CadastrarFonteRendaCommand(Tenant, "Salário", 6000m, 5, Agosto);
 
         Assert.True((await Executar(
@@ -229,8 +235,18 @@ public sealed class BehaviorsDeComandoTests
             comando,
             CadastrarFonteRendaCommandResult.Cadastrada(Alvo, Agosto, 6000m))).Sucesso);
 
+        onboarding.Verify(
+            o => o.CumprirAsync(
+                Acme.Sistemas.Domain.Entities.Onboarding.OnboardingRequisitoEntity
+                    .CodigoRendaDeclarada,
+                It.IsAny<CancellationToken>()),
+            Times.Once);
+
         Assert.False((await Executar(
             behavior, comando, CadastrarFonteRendaCommandResult.Recusada(Recusa))).Sucesso);
+
+        onboarding.Verify(
+            o => o.CumprirAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]

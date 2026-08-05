@@ -13,13 +13,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddObservabilidade();
 builder.AddAutenticacao();
 
+// AddServices antes de AddCore: ela registra explicitamente o OnboardingBehavior, e o primeiro
+// behavior registrado é o mais externo. A recusa por onboarding precisa acontecer antes do
+// handler e antes dos behaviors que reavaliam alertas — avaliar um estado que não foi gravado
+// emitiria aviso por uma operação que a pessoa não conseguiu concluir.
+builder.Services.AddServices();
+
 builder.Services.AddCore(
     Assembly.GetExecutingAssembly(),
     typeof(ServicesServiceCollecation).Assembly);
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddRepository();
-builder.Services.AddServices();
 
 // O contexto de isolamento é por requisição e alimenta as policies de RLS. Registrado pela
 // classe concreta e exposto pela interface: o middleware precisa preenchê-lo, o resto do

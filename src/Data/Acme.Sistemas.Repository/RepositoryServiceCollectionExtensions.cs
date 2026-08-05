@@ -3,6 +3,7 @@ using Acme.Sistemas.Repository.Repositories.V1.Alerta;
 using Acme.Sistemas.Repository.Repositories.V1.Categoria;
 using Acme.Sistemas.Repository.Repositories.V1.FonteRenda;
 using Acme.Sistemas.Repository.Repositories.V1.Lancamento;
+using Acme.Sistemas.Repository.Repositories.V1.Onboarding;
 using Acme.Sistemas.Repository.Repositories.V1.Orcamento;
 using Acme.Sistemas.Repository.Repositories.V1.Recorrencia;
 using Acme.Sistemas.Repository.Repositories.V1.RegraClassificacao;
@@ -41,6 +42,9 @@ public static class RepositoryServiceCollectionExtensions
         services.AddScoped<IAlertaReadRepository, AlertaReadRepository>();
         services.AddScoped<IAlertaWriteRepository, AlertaWriteRepository>();
         services.AddScoped<IRotinaReadRepository, RotinaReadRepository>();
+
+        services.AddScoped<IOnboardingReadRepository, OnboardingReadRepository>();
+        services.AddScoped<IOnboardingWriteRepository, OnboardingWriteRepository>();
 
         return services;
     }

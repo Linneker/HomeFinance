@@ -23,4 +23,5 @@ public sealed record CriarLancamentoCommand(
     DateOnly? DataCaixa,
     Guid? CategoriaId,
     int Parcelas = 1,
-    bool ConfirmouDuplicidade = false) : IRequest<CriarLancamentoCommandResult>;
+    bool ConfirmouDuplicidade = false)
+    : IRequest<CriarLancamentoCommandResult>, IEscritaFinanceira;

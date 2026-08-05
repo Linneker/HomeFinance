@@ -10,4 +10,5 @@ public sealed record CopiarOrcamentoCommand(
     Guid TenantId,
     DateOnly Origem,
     DateOnly Destino,
-    bool Confirmado = false) : IRequest<CopiarOrcamentoCommandResult>;
+    bool Confirmado = false)
+    : IRequest<CopiarOrcamentoCommandResult>, IEscritaFinanceira;

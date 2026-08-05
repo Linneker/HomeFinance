@@ -12,4 +12,4 @@ public sealed record AlterarLancamentoCommand(
     decimal Valor,
     DateOnly? DataCompetencia,
     DateOnly? DataCaixa,
-    Guid? CategoriaId) : IRequest<AlterarLancamentoCommandResult>;
+    Guid? CategoriaId) : IRequest<AlterarLancamentoCommandResult>, IEscritaFinanceira;

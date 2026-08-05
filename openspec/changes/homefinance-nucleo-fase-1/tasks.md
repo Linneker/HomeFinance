@@ -120,16 +120,16 @@
 
 ## 10. Onboarding progressivo
 
-- [ ] 10.1 `Domain`: entidades `OnboardingRequisitoEntity` e `OnboardingEstadoEntity`, com as marcas declarado e ativo
-- [ ] 10.2 `Repository`: repositórios Read/Write de requisito e de estado do onboarding
-- [ ] 10.3 Migration de dados: semear os requisitos, com renda declarada ativo e bloqueante e os requisitos documentais declarados porém inativos
-- [ ] 10.4 `Services`: `OnboardingBehavior` aplicado aos Commands que escrevem dado financeiro, recusando com a indicação do requisito pendente
-- [ ] 10.5 `Services`: marcação automática do requisito de renda como cumprido ao cadastrar a primeira fonte de renda
-- [ ] 10.6 `Services`: Query de progresso com percentual concluído e lista de requisitos pendentes
-- [ ] 10.7 `Services`: apuração do estado por tenant, sem afetar a leitura de tenant compartilhado por destinatário com onboarding pendente
-- [ ] 10.8 `Api`: endpoint `V1` de progresso do onboarding
-- [ ] 10.9 Testes unitários: escrita recusada com requisito pendente, liberação após cumprimento, requisito declarado e inativo não bloqueia
-- [ ] 10.10 Teste de integração: Query de leitura não passa pelo Behavior e permanece acessível com onboarding pendente
+- [x] 10.1 `Domain`: entidades `OnboardingRequisitoEntity` e `OnboardingEstadoEntity`, com as marcas declarado e ativo
+- [x] 10.2 `Repository`: repositórios Read/Write de requisito e de estado do onboarding
+- [x] 10.3 Migration de dados: semear os requisitos, com renda declarada ativo e bloqueante e os requisitos documentais declarados porém inativos
+- [x] 10.4 `Services`: `OnboardingBehavior` aplicado aos Commands que escrevem dado financeiro, recusando com a indicação do requisito pendente
+- [x] 10.5 `Services`: marcação automática do requisito de renda como cumprido ao cadastrar a primeira fonte de renda
+- [x] 10.6 `Services`: Query de progresso com percentual concluído e lista de requisitos pendentes
+- [x] 10.7 `Services`: apuração do estado por tenant, sem afetar a leitura de tenant compartilhado por destinatário com onboarding pendente
+- [x] 10.8 `Api`: endpoint `V1` de progresso do onboarding
+- [x] 10.9 Testes unitários: escrita recusada com requisito pendente, liberação após cumprimento, requisito declarado e inativo não bloqueia
+- [x] 10.10 Teste de integração: Query de leitura não passa pelo Behavior e permanece acessível com onboarding pendente
 
 ## 11. Assinatura e pagamento
 
