@@ -396,6 +396,8 @@ public sealed class OnboardingTests
         Dublar<ICategoriaReadRepository>(services);
         Dublar<IFonteRendaReadRepository>(services);
         Dublar<IRegraClassificacaoWriteRepository>(services);
+        Dublar<IAssinaturaWriteRepository>(services);
+        Dublar<IPlanoReadRepository>(services);
 
         services.AddServices();
         services.AddCore(typeof(ServicesServiceCollecation).Assembly);

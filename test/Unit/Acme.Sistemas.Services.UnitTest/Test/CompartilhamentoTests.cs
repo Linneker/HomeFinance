@@ -3,12 +3,29 @@ using Acme.Sistemas.Domain.Interfaces.Repository;
 using Acme.Sistemas.Services.V1.Compartilhamento.Command.CompartilharTenant;
 using Acme.Sistemas.Services.V1.Compartilhamento.Command.RevogarCompartilhamento;
 using Acme.Sistemas.Services.V1.Compartilhamento.Query.ItensDoConsentimento;
+using Acme.Sistemas.Services.V1.Assinaturas;
 using Moq;
 
 namespace Acme.Sistemas.Services.UnitTest.Test;
 
 public sealed class CompartilhamentoTests
 {
+    /// <summary>
+    /// Assinatura ativa com cota folgada. A cota tem grupo de teste próprio: aqui o que está sob
+    /// prova é a regra de compartilhamento, e um plano esgotado por acidente faria todos estes
+    /// testes falharem por um motivo que não é o deles.
+    /// </summary>
+    private static IAssinaturaService ComCota(int total = 3, int usada = 0)
+    {
+        var assinaturas = new Mock<IAssinaturaService>();
+
+        assinaturas.Setup(a => a.SituacaoAtualAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new SituacaoDaConta(
+                Domain.Enums.SituacaoAssinatura.Ativa, "casal", total, usada));
+
+        return assinaturas.Object;
+    }
+
     private static readonly Guid Ana = Guid.CreateVersion7();
     private static readonly Guid TenantAna = Guid.CreateVersion7();
     private static readonly Guid Bruno = Guid.CreateVersion7();
@@ -42,7 +59,7 @@ public sealed class CompartilhamentoTests
     public async Task Concessao_usa_o_tenant_do_autenticado_nunca_um_informado()
     {
         var tenants = Repositorio(TenantAna, Bruno);
-        var handler = new CompartilharTenantCommandHandler(tenants.Object, new RelogioFixo());
+        var handler = new CompartilharTenantCommandHandler(tenants.Object, ComCota(), new RelogioFixo());
 
         var resultado = await handler.HandleAsync(Comando(), CancellationToken.None);
 
@@ -61,7 +78,7 @@ public sealed class CompartilhamentoTests
     public async Task Scr_fica_de_fora_por_padrao_e_so_entra_marcado()
     {
         var tenants = Repositorio(TenantAna, Bruno);
-        var handler = new CompartilharTenantCommandHandler(tenants.Object, new RelogioFixo());
+        var handler = new CompartilharTenantCommandHandler(tenants.Object, ComCota(), new RelogioFixo());
 
         await handler.HandleAsync(Comando(scr: true), CancellationToken.None);
 
@@ -110,7 +127,7 @@ public sealed class CompartilhamentoTests
     public async Task Sem_confirmacao_do_consentimento_nada_e_concedido()
     {
         var tenants = Repositorio(TenantAna, Bruno);
-        var handler = new CompartilharTenantCommandHandler(tenants.Object, new RelogioFixo());
+        var handler = new CompartilharTenantCommandHandler(tenants.Object, ComCota(), new RelogioFixo());
 
         var resultado = await handler.HandleAsync(Comando(confirmado: false), CancellationToken.None);
 
@@ -127,7 +144,7 @@ public sealed class CompartilhamentoTests
     public async Task Compartilhar_consigo_mesmo_e_recusado()
     {
         var tenants = Repositorio(TenantAna, Ana);
-        var handler = new CompartilharTenantCommandHandler(tenants.Object, new RelogioFixo());
+        var handler = new CompartilharTenantCommandHandler(tenants.Object, ComCota(), new RelogioFixo());
 
         var resultado = await handler.HandleAsync(Comando(), CancellationToken.None);
 
@@ -141,7 +158,7 @@ public sealed class CompartilhamentoTests
     public async Task Concessao_duplicada_e_recusada()
     {
         var tenants = Repositorio(TenantAna, Bruno, jaVigente: true);
-        var handler = new CompartilharTenantCommandHandler(tenants.Object, new RelogioFixo());
+        var handler = new CompartilharTenantCommandHandler(tenants.Object, ComCota(), new RelogioFixo());
 
         var resultado = await handler.HandleAsync(Comando(), CancellationToken.None);
 
@@ -153,7 +170,7 @@ public sealed class CompartilhamentoTests
     public async Task Destinatario_inexistente_e_recusado()
     {
         var tenants = Repositorio(TenantAna, destinatario: null);
-        var handler = new CompartilharTenantCommandHandler(tenants.Object, new RelogioFixo());
+        var handler = new CompartilharTenantCommandHandler(tenants.Object, ComCota(), new RelogioFixo());
 
         var resultado = await handler.HandleAsync(Comando(), CancellationToken.None);
 
@@ -167,7 +184,7 @@ public sealed class CompartilhamentoTests
     public async Task Compartilhamento_e_assimetrico_e_nao_concede_o_caminho_inverso()
     {
         var tenants = Repositorio(TenantAna, Bruno);
-        var handler = new CompartilharTenantCommandHandler(tenants.Object, new RelogioFixo());
+        var handler = new CompartilharTenantCommandHandler(tenants.Object, ComCota(), new RelogioFixo());
 
         await handler.HandleAsync(Comando(), CancellationToken.None);
 
@@ -189,7 +206,7 @@ public sealed class CompartilhamentoTests
     {
         // Bruno recebeu o tenant da Ana e está com ele aberto. Pede compartilhamento com Carla.
         var tenants = Repositorio(TenantBruno, Carla);
-        var handler = new CompartilharTenantCommandHandler(tenants.Object, new RelogioFixo());
+        var handler = new CompartilharTenantCommandHandler(tenants.Object, ComCota(), new RelogioFixo());
 
         var resultado = await handler.HandleAsync(
             new CompartilharTenantCommand(Bruno, TenantAna, "carla@exemplo.com.br", true, false),

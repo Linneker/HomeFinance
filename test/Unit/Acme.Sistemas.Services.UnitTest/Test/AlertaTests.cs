@@ -6,6 +6,7 @@ using Acme.Sistemas.Domain.Enums;
 using Acme.Sistemas.Domain.Interfaces.Repository;
 using Acme.Sistemas.Infrastructure.Databases.Configuration;
 using Acme.Sistemas.Services.V1.Alertas;
+using Acme.Sistemas.Services.V1.Assinaturas;
 using Acme.Sistemas.Services.V1.Alertas.Command.DispensarAlerta;
 using Acme.Sistemas.Services.V1.Alertas.Query.AlertasAbertos;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -108,13 +109,26 @@ public sealed class AlertaTests
         CriadoEm = Agora,
     };
 
+    /// <summary>Alerta é recurso derivado: sem assinatura vigente, nenhum é emitido.</summary>
+    private static IAssinaturaService Assinante(bool vigente)
+    {
+        var assinaturas = new Mock<IAssinaturaService>();
+
+        assinaturas.Setup(a => a.SituacaoAtualAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new SituacaoDaConta(
+                vigente ? SituacaoAssinatura.Ativa : SituacaoAssinatura.Suspensa, "casal", 3, 0));
+
+        return assinaturas.Object;
+    }
+
     private static AlertaService Servico(
         AlertasEmMemoria alertas,
         IReadOnlyList<TotalPorCategoria>? totais = null,
         IReadOnlyList<OrcamentoMensalEntity>? orcamentos = null,
         IReadOnlyList<LancamentoApuradoEntity>? saidas = null,
         IReadOnlyList<FonteRendaEntity>? rendas = null,
-        IContextoRequisicao? contexto = null)
+        IContextoRequisicao? contexto = null,
+        bool assinaturaVigente = true)
     {
         var relatorios = new Mock<IRelatorioReadRepository>();
         relatorios.Setup(r => r.TotaisPorCategoriaAsync(
@@ -147,6 +161,7 @@ public sealed class AlertaTests
             categorias.Object,
             fontes.Object,
             contexto ?? new ContextoDeTeste(),
+            Assinante(vigente: assinaturaVigente),
             new RelogioFixo());
     }
 

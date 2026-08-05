@@ -18,4 +18,4 @@ public sealed record CompartilharTenantCommand(
     Guid? TenantSelecionadoId,
     string EmailDestinatario,
     bool ConsentimentoConfirmado,
-    bool IncluiScr) : IRequest<CompartilharTenantCommandResult>;
+    bool IncluiScr) : IRequest<CompartilharTenantCommandResult>, IRecursoDerivado;

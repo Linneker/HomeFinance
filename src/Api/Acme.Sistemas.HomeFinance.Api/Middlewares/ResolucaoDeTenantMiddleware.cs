@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Acme.Sistemas.Core.Security;
 using Acme.Sistemas.Domain.Interfaces.Repository;
 using Acme.Sistemas.HomeFinance.Api.Config;
+using Acme.Sistemas.Services.V1.Assinaturas;
 using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Acme.Sistemas.HomeFinance.Api.Middlewares;
@@ -24,10 +25,14 @@ public sealed class ResolucaoDeTenantMiddleware(RequestDelegate proximo)
     /// <summary>Cabeçalho de seleção de tenant. Ausente, vale o tenant padrão do token.</summary>
     public const string CabecalhoTenant = "X-Tenant";
 
+    /// <summary>Motivo devolvido quando a assinatura barra a abertura do tenant.</summary>
+    public const string CabecalhoMotivo = "X-Acesso-Negado";
+
     public async Task InvokeAsync(
         HttpContext contexto,
         ContextoRequisicaoHttp contextoRequisicao,
-        ITenantWriteRepository tenants)
+        ITenantWriteRepository tenants,
+        IAssinaturaService assinaturas)
     {
         if (contexto.User.Identity?.IsAuthenticated != true)
         {
@@ -67,9 +72,58 @@ public sealed class ResolucaoDeTenantMiddleware(RequestDelegate proximo)
             return;
         }
 
+        // Tenant próprio abre sempre, mesmo com assinatura suspensa: registrar e ler os
+        // próprios lançamentos é o que a suspensão preserva, e excluir a conta também.
+        if (!acesso.EhProprio && !await PodeAbrirCompartilhadoAsync(
+                contexto, assinaturas, acesso.TenantId))
+        {
+            return;
+        }
+
         contextoRequisicao.DefinirTenant(acesso.TenantId, acesso.SomenteLeitura);
 
         await proximo(contexto);
+    }
+
+    /// <summary>
+    /// Compartilhamento é recurso derivado, e depende das duas assinaturas.
+    /// </summary>
+    /// <remarks>
+    /// Nada é gravado nos dois sentidos: a suspensão do dono derruba o acesso porque a resposta
+    /// desta pergunta muda, e a regularização o devolve pelo mesmo motivo — sem reconceder nada
+    /// e sem estado para ficar preso no meio do caminho.
+    /// <para>
+    /// Os dois motivos são distintos na resposta porque a ação é distinta: quem precisa pagar é
+    /// o convidado num caso e o dono no outro, e uma mensagem genérica mandaria a pessoa errada
+    /// procurar o cartão.
+    /// </para>
+    /// </remarks>
+    private static async Task<bool> PodeAbrirCompartilhadoAsync(
+        HttpContext contexto,
+        IAssinaturaService assinaturas,
+        Guid tenantId)
+    {
+        var propria = await assinaturas.SituacaoAtualAsync(contexto.RequestAborted);
+
+        if (!propria.Vigente)
+        {
+            Negar(contexto, "assinatura_propria_inativa");
+            return false;
+        }
+
+        if (!await assinaturas.DonoDoTenantVigenteAsync(tenantId, contexto.RequestAborted))
+        {
+            Negar(contexto, "assinatura_do_dono_inativa");
+            return false;
+        }
+
+        return true;
+    }
+
+    private static void Negar(HttpContext contexto, string motivo)
+    {
+        contexto.Response.Headers[CabecalhoMotivo] = motivo;
+        contexto.Response.StatusCode = StatusCodes.Status403Forbidden;
     }
 
     private static Guid? LerTenantSolicitado(HttpContext contexto)

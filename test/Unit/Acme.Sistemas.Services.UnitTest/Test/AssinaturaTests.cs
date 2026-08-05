@@ -3,6 +3,8 @@ using Acme.Sistemas.Domain.Enums;
 using Acme.Sistemas.Domain.Interfaces.Repository;
 using Acme.Sistemas.Infrastructure.Databases.Configuration;
 using Acme.Sistemas.Services.V1.Assinaturas;
+using Acme.Sistemas.ExternalIntegration.Pagamentos;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
 namespace Acme.Sistemas.Services.UnitTest.Test;
@@ -156,7 +158,8 @@ public sealed class AssinaturaTests
         PlanoEntity? plano = null,
         int compartilhamentos = 0,
         IContextoRequisicao? contexto = null,
-        AssinaturaEntity? doDono = null)
+        AssinaturaEntity? doDono = null,
+        IReadOnlyList<IProvedorDePagamento>? provedores = null)
     {
         var assinaturas = new Mock<IAssinaturaWriteRepository>();
 
@@ -176,8 +179,10 @@ public sealed class AssinaturaTests
         return new AssinaturaService(
             assinaturas.Object,
             planos.Object,
+            provedores ?? [],
             contexto ?? new ContextoDeTeste(),
-            new RelogioFixo());
+            new RelogioFixo(),
+            NullLogger<AssinaturaService>.Instance);
     }
 
     [Fact]

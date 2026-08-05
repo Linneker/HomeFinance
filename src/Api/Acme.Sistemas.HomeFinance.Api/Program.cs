@@ -1,6 +1,7 @@
 using System.Reflection;
 using Acme.Sistemas.Core;
 using Acme.Sistemas.HomeFinance.Api.Config;
+using Acme.Sistemas.ExternalIntegration;
 using Acme.Sistemas.Infrastructure;
 using Acme.Sistemas.HomeFinance.Api.Middlewares;
 using Acme.Sistemas.Infrastructure.Databases.Configuration;
@@ -24,6 +25,7 @@ builder.Services.AddCore(
     typeof(ServicesServiceCollecation).Assembly);
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddExternalIntegration(builder.Configuration);
 builder.Services.AddRepository();
 
 // O contexto de isolamento é por requisição e alimenta as policies de RLS. Registrado pela

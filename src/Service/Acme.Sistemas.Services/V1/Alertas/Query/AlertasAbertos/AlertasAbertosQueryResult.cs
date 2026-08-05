@@ -1,3 +1,4 @@
+using Acme.Sistemas.Core.Response.Erros;
 using Acme.Sistemas.Domain.Enums;
 
 namespace Acme.Sistemas.Services.V1.Alertas.Query.AlertasAbertos;
@@ -13,6 +14,11 @@ public sealed record AlertaListado(
     DateTimeOffset CriadoEm);
 
 public sealed record AlertasAbertosQueryResult(IReadOnlyList<AlertaListado> Alertas)
+    : IResultadoRecusavel<AlertasAbertosQueryResult>
 {
+    public IReadOnlyList<Error> Erros { get; init; } = [];
+
     public static readonly AlertasAbertosQueryResult Vazio = new([]);
+
+    public static AlertasAbertosQueryResult Recusar(Error erro) => new([]) { Erros = [erro] };
 }

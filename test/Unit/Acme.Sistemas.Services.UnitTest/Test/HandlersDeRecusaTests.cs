@@ -19,6 +19,7 @@ using Acme.Sistemas.Services.V1.Lancamentos.Command.EncerrarRecorrencia;
 using Acme.Sistemas.Services.V1.Lancamentos.Command.RemoverLancamento;
 using Acme.Sistemas.Services.V1.Lancamentos.Query.Categorias;
 using Acme.Sistemas.Services.V1.Lancamentos.Query.Lancamentos;
+using Acme.Sistemas.Services.V1.Assinaturas;
 using Moq;
 
 namespace Acme.Sistemas.Services.UnitTest.Test;
@@ -33,6 +34,18 @@ namespace Acme.Sistemas.Services.UnitTest.Test;
 /// </remarks>
 public sealed class HandlersDeRecusaTests
 {
+    /// <summary>Assinatura ativa com cota folgada: a cota tem grupo de teste próprio.</summary>
+    private static IAssinaturaService ComCota(int total = 3, int usada = 0)
+    {
+        var assinaturas = new Mock<IAssinaturaService>();
+
+        assinaturas.Setup(a => a.SituacaoAtualAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new SituacaoDaConta(
+                Domain.Enums.SituacaoAssinatura.Ativa, "casal", total, usada));
+
+        return assinaturas.Object;
+    }
+
     private static readonly Guid Tenant = Guid.CreateVersion7();
     private static readonly Guid Usuario = Guid.CreateVersion7();
     private static readonly Guid Alvo = Guid.CreateVersion7();
@@ -540,7 +553,7 @@ public sealed class HandlersDeRecusaTests
             .ReturnsAsync((Guid?)null);
 
         var resultado = await new CompartilharTenantCommandHandler(
-                tenants.Object, new RelogioFixo())
+                tenants.Object, ComCota(), new RelogioFixo())
             .HandleAsync(
                 new CompartilharTenantCommand(Usuario, null, "bruno@teste.local", true, false),
                 CancellationToken.None);

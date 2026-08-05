@@ -7,4 +7,4 @@ namespace Acme.Sistemas.Services.V1.Alertas.Query.AlertasAbertos;
 /// só lê não recebe nenhum.
 /// </param>
 public sealed record AlertasAbertosQuery(Guid TenantId, bool SomenteLeitura)
-    : IRequest<AlertasAbertosQueryResult>;
+    : IRequest<AlertasAbertosQueryResult>, IRecursoDerivado;

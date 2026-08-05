@@ -4,6 +4,7 @@ using Acme.Sistemas.Domain.Entities.Lancamentos;
 using Acme.Sistemas.Domain.Enums;
 using Acme.Sistemas.Domain.Interfaces.Repository;
 using Acme.Sistemas.Infrastructure.Databases.Configuration;
+using Acme.Sistemas.Services.V1.Assinaturas;
 
 namespace Acme.Sistemas.Services.V1.Alertas;
 
@@ -15,6 +16,7 @@ public sealed class AlertaService(
     ICategoriaReadRepository categorias,
     IFonteRendaReadRepository fontes,
     IContextoRequisicao contexto,
+    IAssinaturaService assinaturas,
     TimeProvider relogio)
     : IAlertaService
 {
@@ -35,7 +37,7 @@ public sealed class AlertaService(
         // Somente leitura significa tenant recebido por compartilhamento: o alerta é do dono,
         // não de quem está olhando. Emitir aqui gravaria alerta no espaço alheio — a RLS
         // recusaria a escrita, e o convidado veria um erro que não é dele.
-        if (!PodeAvaliar())
+        if (!PodeAvaliar() || !await AssinaturaVigenteAsync(cancellationToken))
         {
             return ResultadoDaAvaliacao.Nenhum;
         }
@@ -78,7 +80,7 @@ public sealed class AlertaService(
 
     public async Task<ResultadoDaAvaliacao> AvaliarCaixaAsync(CancellationToken cancellationToken)
     {
-        if (!PodeAvaliar())
+        if (!PodeAvaliar() || !await AssinaturaVigenteAsync(cancellationToken))
         {
             return ResultadoDaAvaliacao.Nenhum;
         }
@@ -188,6 +190,17 @@ public sealed class AlertaService(
     }
 
     private bool PodeAvaliar() => contexto.TenantId is not null && !contexto.SomenteLeitura;
+
+    /// <summary>
+    /// Alerta é recurso derivado: com assinatura inativa nenhum é emitido nem encerrado.
+    /// </summary>
+    /// <remarks>
+    /// Nem emitido <em>nem encerrado</em>: encerrar durante a suspensão apagaria o histórico de
+    /// condições que a pessoa nunca chegou a ver, e ela voltaria do pagamento com a tela limpa
+    /// achando que os problemas se resolveram sozinhos.
+    /// </remarks>
+    private async Task<bool> AssinaturaVigenteAsync(CancellationToken cancellationToken) =>
+        (await assinaturas.SituacaoAtualAsync(cancellationToken)).Vigente;
 
     private static bool DentroDaJanela(string chave, DateOnly de, DateOnly ate) =>
         chave.StartsWith("caixa:", StringComparison.Ordinal)

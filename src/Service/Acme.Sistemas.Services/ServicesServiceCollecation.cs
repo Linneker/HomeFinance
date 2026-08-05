@@ -27,12 +27,19 @@ public static class ServicesServiceCollecation
 
         services.AddScoped<IOnboardingService, OnboardingService>();
         services.AddScoped<IAssinaturaService, AssinaturaService>();
+        services.AddScoped<RotinaDeReconciliacao>();
+        services.AddScoped<FilaDeDocumentosRetidos>();
 
         // Registrado antes da varredura de assembly: o primeiro behavior registrado é o mais
         // externo, e a recusa por onboarding precisa acontecer antes do handler e antes dos
         // behaviors que reavaliam alertas — avaliar um estado que não foi gravado emitiria
         // aviso por uma operação que a pessoa não conseguiu concluir.
         services.AddPipelineBehavior(typeof(OnboardingBehavior<,>));
+
+        // Depois do onboarding, e por isso mais interno: com onboarding pendente e assinatura
+        // suspensa, tentar lançar responde sobre o onboarding — que é o que de fato barra
+        // aquele pedido — e não sobre a assinatura.
+        services.AddPipelineBehavior(typeof(AssinaturaBehavior<,>));
 
         // Handlers e behaviors são descobertos por AddCore(assembly) no Program.cs.
         return services;

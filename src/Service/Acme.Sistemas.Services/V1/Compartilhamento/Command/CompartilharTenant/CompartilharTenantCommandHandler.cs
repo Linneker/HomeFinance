@@ -2,6 +2,7 @@ using Acme.Sistemas.Core.Mediators.Handler;
 using Acme.Sistemas.Core.Response.Erros;
 using Acme.Sistemas.Domain.Entities.Tenants;
 using Acme.Sistemas.Domain.Interfaces.Repository;
+using Acme.Sistemas.Services.V1.Assinaturas;
 
 namespace Acme.Sistemas.Services.V1.Compartilhamento.Command.CompartilharTenant;
 
@@ -20,6 +21,7 @@ namespace Acme.Sistemas.Services.V1.Compartilhamento.Command.CompartilharTenant;
 /// </remarks>
 public sealed class CompartilharTenantCommandHandler(
     ITenantWriteRepository tenants,
+    IAssinaturaService assinaturas,
     TimeProvider relogio)
     : IRequestHandler<CompartilharTenantCommand, CompartilharTenantCommandResult>
 {
@@ -28,6 +30,7 @@ public sealed class CompartilharTenantCommandHandler(
     public const string CodigoCompartilhamentoConsigoMesmo = "compartilhamento_consigo_mesmo";
     public const string CodigoJaCompartilhado = "ja_compartilhado";
     public const string CodigoRepasseNaoPermitido = "repasse_nao_permitido";
+    public const string CodigoCotaEsgotada = "cota_do_plano_esgotada";
 
     public async Task<CompartilharTenantCommandResult> HandleAsync(
         CompartilharTenantCommand request,
@@ -87,6 +90,22 @@ public sealed class CompartilharTenantCommandHandler(
         {
             return CompartilharTenantCommandResult.Recusado(
                 new Error(CodigoJaCompartilhado, "Este acesso já foi concedido."));
+        }
+
+        // A cota é conferida por último, depois de o pedido já ter passado por tudo o mais: só
+        // faz sentido dizer "seu plano acabou" para uma concessão que de outro modo aconteceria.
+        // Dizer isso antes de saber se o e-mail existe empurraria a pessoa a mudar de plano por
+        // causa de um erro de digitação.
+        var conta = await assinaturas.SituacaoAtualAsync(cancellationToken);
+
+        if (conta.CotaDisponivel <= 0)
+        {
+            return CompartilharTenantCommandResult.Recusado(
+                new Error(
+                    CodigoCotaEsgotada,
+                    conta.CotaTotal == 0
+                        ? "Seu plano não inclui compartilhamento."
+                        : $"Seu plano permite {conta.CotaTotal} compartilhamento(s), e todos estão em uso."));
         }
 
         var agora = relogio.GetUtcNow();

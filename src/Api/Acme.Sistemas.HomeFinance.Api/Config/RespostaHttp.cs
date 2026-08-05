@@ -26,6 +26,12 @@ public static class RespostaHttp
         // Cópia de orçamento parada à espera de aceite. É conflito com o estado do destino,
         // não erro de entrada: a mesma requisição, reenviada com a confirmação, passa.
         "confirmacao_necessaria",
+
+        // Já existe assinatura viva na conta: conflito com o estado, não entrada malformada.
+        "assinatura_ja_vigente",
+
+        // A compra pertence a outra conta do aplicativo.
+        "comprovante_em_outra_conta",
     ];
 
     /// <summary>
@@ -34,7 +40,17 @@ public static class RespostaHttp
     /// um campo que está certo.
     /// </summary>
     private static readonly HashSet<string> Proibidos =
-        ["repasse_nao_permitido", "revogacao_fora_do_proprio_tenant"];
+    [
+        "repasse_nao_permitido",
+        "revogacao_fora_do_proprio_tenant",
+
+        // Onboarding e assinatura são 403 e não 400: o pedido está correto, quem não pode é a
+        // conta. É o que permite ao app abrir a tela de assinatura ou a barra de progresso em
+        // vez de pedir para corrigir um campo que está certo.
+        "onboarding_pendente",
+        "assinatura_inativa",
+        "cota_do_plano_esgotada",
+    ];
 
     /// <summary>
     /// Não existe o que operar. Fica fora daqui, de propósito, o

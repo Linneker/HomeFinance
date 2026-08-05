@@ -3,6 +3,8 @@ using Acme.Sistemas.Domain.Entities.Tenants;
 using Acme.Sistemas.Domain.Entities.Users;
 using Acme.Sistemas.Infrastructure.Databases.Configuration;
 using Acme.Sistemas.IntegrationTest.Config;
+using Acme.Sistemas.Services.V1.Assinaturas;
+using Moq;
 using Acme.Sistemas.Repository.Repositories.V1.Tenant;
 using Acme.Sistemas.Repository.Repositories.V1.Usuario;
 using Acme.Sistemas.Services.V1.Compartilhamento.Command.CompartilharTenant;
@@ -21,6 +23,21 @@ namespace Acme.Sistemas.IntegrationTest.Test;
 [Collection(nameof(BancoCollection))]
 public sealed class CompartilhamentoSomenteLeituraTests(AmbienteBanco ambiente)
 {
+    /// <summary>
+    /// Assinatura ativa com cota folgada. O que estes testes provam é o isolamento no banco; a
+    /// cota é regra de aplicação e tem cobertura própria.
+    /// </summary>
+    private static IAssinaturaService ComCota()
+    {
+        var assinaturas = new Mock<IAssinaturaService>();
+
+        assinaturas.Setup(a => a.SituacaoAtualAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new SituacaoDaConta(
+                Acme.Sistemas.Domain.Enums.SituacaoAssinatura.Ativa, "casal", 3, 0));
+
+        return assinaturas.Object;
+    }
+
     private static CancellationToken Ct => CancellationToken.None;
 
     private sealed record Conta(Guid UsuarioId, Guid TenantId, string Email);
@@ -69,7 +86,9 @@ public sealed class CompartilhamentoSomenteLeituraTests(AmbienteBanco ambiente)
         await SemearCategoriaAsync(contexto, ana.TenantId, "Alimentacao");
 
         var concessao = await new CompartilharTenantCommandHandler(
-                new TenantWriteRepository(ambiente.CriarGerenciador(contexto)), TimeProvider.System)
+            new TenantWriteRepository(ambiente.CriarGerenciador(contexto)),
+            ComCota(),
+            TimeProvider.System)
             .HandleAsync(
                 new CompartilharTenantCommand(
                     ana.UsuarioId, ana.TenantId, bruno.Email,
