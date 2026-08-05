@@ -1,4 +1,5 @@
 using Acme.Sistemas.Services.V1.Alertas;
+using Acme.Sistemas.Services.V1.Assinaturas;
 using Acme.Sistemas.Services.V1.Classificacao;
 using Acme.Sistemas.Services.V1.Onboarding;
 using Acme.Sistemas.Core;
@@ -25,6 +26,7 @@ public static class ServicesServiceCollecation
         services.AddScoped<RotinaDeAlertasDeCaixa>();
 
         services.AddScoped<IOnboardingService, OnboardingService>();
+        services.AddScoped<IAssinaturaService, AssinaturaService>();
 
         // Registrado antes da varredura de assembly: o primeiro behavior registrado é o mais
         // externo, e a recusa por onboarding precisa acontecer antes do handler e antes dos

@@ -133,18 +133,18 @@
 
 ## 11. Assinatura e pagamento
 
-- [ ] 11.1 `Domain`: entidades `PlanoEntity`, `AssinaturaEntity` e `TransacaoPagamentoEntity`, com enums de situação e de canal
-- [ ] 11.2 Migration: tabelas `plano`, `assinatura`, `transacao_pagamento` e `notificacao_provedor`, com as policies adequadas ao escopo de cada uma
-- [ ] 11.3 Migration de dados: semear o catálogo inicial de planos com as respectivas cotas de compartilhamento
-- [ ] 11.4 `Repository`: repositórios Read/Write de plano, assinatura e transação
-- [ ] 11.5 `Services`: `AssinaturaService` resolvendo a situação vigente da conta, única fonte consultada para decisão de acesso
+- [x] 11.1 `Domain`: entidades `PlanoEntity`, `AssinaturaEntity` e `TransacaoPagamentoEntity`, com enums de situação e de canal
+- [x] 11.2 Migration: tabelas `plano`, `assinatura`, `transacao_pagamento` e `notificacao_provedor`, com as policies adequadas ao escopo de cada uma
+- [x] 11.3 Migration de dados: semear o catálogo inicial de planos com as respectivas cotas de compartilhamento
+- [x] 11.4 `Repository`: repositórios Read/Write de plano, assinatura e transação
+- [x] 11.5 `Services`: `AssinaturaService` resolvendo a situação vigente da conta, única fonte consultada para decisão de acesso
 - [ ] 11.6 `Services`: transição de situação da assinatura entre ativa, carência, suspensa e cancelada, com prazo de carência configurável
 - [ ] 11.7 `Services`: Behavior de assinatura restringindo os recursos derivados — análises, alertas, orientações e compartilhamento — independente do Behavior de onboarding e sem alcançar o registro de lançamentos
 - [ ] 11.8 `Services`: retenção de documento enviado na suspensão, marcado como pendente, e disparo do processamento da fila retida na regularização
 - [ ] 11.9 `Services`: validação de cota do plano na concessão de compartilhamento e recusa quando esgotada ou assinatura inativa
 - [ ] 11.10 `Services`: suspensão e restabelecimento em cascata dos compartilhamentos concedidos, preservando o tenant próprio do destinatário
 - [ ] 11.11 `Services`: exigência de assinatura ativa do destinatário para abrir tenant compartilhado
-- [ ] 11.12 `ExternalIntegration`: validação de comprovante de compra in-app junto às lojas, com credenciais no OpenBao
+- [x] 11.12 `ExternalIntegration`: validação de comprovante de compra in-app junto às lojas, com credenciais no OpenBao
 - [ ] 11.13 `Api`: endpoint de recebimento das notificações das lojas, com processamento idempotente por identificador
 - [ ] 11.14 `ExternalIntegration` e `Api`: integração e notificações do Mercado Pago
 - [ ] 11.15 `ExternalIntegration` e `Api`: integração e notificações do Asaas

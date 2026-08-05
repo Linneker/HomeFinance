@@ -2,6 +2,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Service\Acme.Sistemas.Core\Acme.Sistemas.Core.csproj" />
+    <ProjectReference Include="..\..\Service\Acme.Sistemas.Domain\Acme.Sistemas.Domain.csproj" />
+    <ProjectReference Include="..\Acme.Sistemas.Infrastructure\Acme.Sistemas.Infrastructure.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
