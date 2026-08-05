@@ -4,6 +4,7 @@ using Acme.Sistemas.Repository.Repositories.V1.FonteRenda;
 using Acme.Sistemas.Repository.Repositories.V1.Lancamento;
 using Acme.Sistemas.Repository.Repositories.V1.Orcamento;
 using Acme.Sistemas.Repository.Repositories.V1.Recorrencia;
+using Acme.Sistemas.Repository.Repositories.V1.Relatorio;
 using Acme.Sistemas.Repository.Repositories.V1.RegraClassificacao;
 using Acme.Sistemas.Repository.Repositories.V1.Tenant;
 using Acme.Sistemas.Repository.Repositories.V1.Usuario;
@@ -34,6 +35,8 @@ public static class RepositoryServiceCollectionExtensions
         services.AddScoped<IFonteRendaWriteRepository, FonteRendaWriteRepository>();
         services.AddScoped<IOrcamentoReadRepository, OrcamentoReadRepository>();
         services.AddScoped<IOrcamentoWriteRepository, OrcamentoWriteRepository>();
+
+        services.AddScoped<IRelatorioReadRepository, RelatorioReadRepository>();
 
         return services;
     }

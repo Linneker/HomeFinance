@@ -51,4 +51,8 @@ public static class CalendarioFinanceiro
     /// <summary>Último dia do mês anterior ao de <paramref name="data"/>.</summary>
     public static DateOnly UltimoDiaDoMesAnterior(DateOnly data) =>
         PrimeiroDiaDoMes(data).AddDays(-1);
+
+    /// <summary>Último dia do mês de <paramref name="data"/>.</summary>
+    public static DateOnly UltimoDiaDoMes(DateOnly data) =>
+        PrimeiroDiaDoMes(data).AddMonths(1).AddDays(-1);
 }

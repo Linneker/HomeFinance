@@ -95,14 +95,14 @@
 
 ## 8. Relatórios mensais
 
-- [ ] 8.1 `Repository`: consultas de extrato e de resumo por categoria, agregando sempre a partir de `lancamento_participacao`
-- [ ] 8.2 `Services`: Query de extrato detalhado do mês, com vínculo à previsão orçamentária e marcação de fora do planejamento
-- [ ] 8.3 `Services`: destaque dos lançamentos pendentes de classificação no extrato
-- [ ] 8.4 `Services`: alternância entre competência e caixa, com competência como padrão e a visão ativa explícita no resultado
-- [ ] 8.5 `Services`: Query de resumo por categoria com planejado, realizado e diferença, mais o agrupamento de gastos sem planejamento
-- [ ] 8.6 `Api`: endpoints `V1` de extrato e de resumo mensal
-- [ ] 8.7 Testes unitários: mesma compra parcelada aparece integral em julho na competência e como parcela em agosto no caixa
-- [ ] 8.8 Testes unitários: categoria dentro do orçamento, categoria estourada, mês sem lançamentos e ausência de soma entre tenants
+- [x] 8.1 `Repository`: consultas de extrato e de resumo por categoria, agregando sempre a partir de `lancamento_participacao`
+- [x] 8.2 `Services`: Query de extrato detalhado do mês, com vínculo à previsão orçamentária e marcação de fora do planejamento
+- [x] 8.3 `Services`: destaque dos lançamentos pendentes de classificação no extrato
+- [x] 8.4 `Services`: alternância entre competência e caixa, com competência como padrão e a visão ativa explícita no resultado
+- [x] 8.5 `Services`: Query de resumo por categoria com planejado, realizado e diferença, mais o agrupamento de gastos sem planejamento
+- [x] 8.6 `Api`: endpoints `V1` de extrato e de resumo mensal
+- [x] 8.7 Testes unitários: mesma compra parcelada aparece integral em julho na competência e como parcela em agosto no caixa
+- [x] 8.8 Testes unitários: categoria dentro do orçamento, categoria estourada, mês sem lançamentos e ausência de soma entre tenants
 
 ## 9. Alertas
 

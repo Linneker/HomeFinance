@@ -7,6 +7,8 @@ using Acme.Sistemas.Services.V1.Lancamentos.Query.Categorias;
 using Acme.Sistemas.Services.V1.Lancamentos.Query.Lancamentos;
 using Acme.Sistemas.Services.V1.Planejamento.Query.FontesRenda;
 using Acme.Sistemas.Services.V1.Planejamento.Query.OrcamentoDoMes;
+using Acme.Sistemas.Services.V1.Relatorios.Query.ExtratoDoMes;
+using Acme.Sistemas.Services.V1.Relatorios.Query.ResumoDoMes;
 
 namespace Acme.Sistemas.Services.UnitTest.Test;
 
@@ -92,4 +94,18 @@ public sealed class BehaviorsTests
             new OrcamentoDoMesQueryBehavior(),
             new OrcamentoDoMesQuery(Tenant, Agosto),
             new OrcamentoDoMesQueryResult(Agosto, [], 0m, 0m, null));
+
+    [Fact]
+    public Task Extrato_do_mes_repassa_sem_cache() =>
+        RepassaSemAlterar(
+            new ExtratoDoMesQueryBehavior(),
+            new ExtratoDoMesQuery(Tenant, Agosto),
+            new ExtratoDoMesQueryResult(Agosto, false, [], 0m, 0, true));
+
+    [Fact]
+    public Task Resumo_do_mes_repassa_sem_cache() =>
+        RepassaSemAlterar(
+            new ResumoDoMesQueryBehavior(),
+            new ResumoDoMesQuery(Tenant, Agosto),
+            ResumoDoMesQueryResult.Vazio(Agosto, false));
 }
