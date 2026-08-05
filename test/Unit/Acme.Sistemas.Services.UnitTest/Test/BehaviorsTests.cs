@@ -1,5 +1,6 @@
 using Acme.Sistemas.Core.Mediators;
 using Acme.Sistemas.Core.Mediators.Handler;
+using Acme.Sistemas.Services.V1.Alertas.Query.AlertasAbertos;
 using Acme.Sistemas.Services.V1.Classificacao.Query.Regras;
 using Acme.Sistemas.Services.V1.Compartilhamento.Query.ItensDoConsentimento;
 using Acme.Sistemas.Services.V1.Compartilhamento.Query.TenantsDisponiveis;
@@ -108,4 +109,11 @@ public sealed class BehaviorsTests
             new ResumoDoMesQueryBehavior(),
             new ResumoDoMesQuery(Tenant, Agosto),
             ResumoDoMesQueryResult.Vazio(Agosto, false));
+
+    [Fact]
+    public Task Alertas_abertos_repassa_sem_cache() =>
+        RepassaSemAlterar(
+            new AlertasAbertosQueryBehavior(),
+            new AlertasAbertosQuery(Tenant, SomenteLeitura: false),
+            AlertasAbertosQueryResult.Vazio);
 }

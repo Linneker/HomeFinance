@@ -106,17 +106,17 @@
 
 ## 9. Alertas
 
-- [ ] 9.1 `Domain`: entidade `AlertaEntity` com chave de condição e estados aberto, encerrado e dispensado
-- [ ] 9.2 `Repository`: repositórios Read/Write de alerta, com busca por chave de condição
-- [ ] 9.3 `Services`: avaliação do alerta de competência ao criar, alterar, remover ou reclassificar lançamento
-- [ ] 9.4 `Services`: projeção de saldo por data a partir da renda prevista e das saídas de caixa previstas
-- [ ] 9.5 `Services`: avaliação do alerta de caixa, emitindo antes da data projetada de insuficiência
-- [ ] 9.6 `Services`: rotina diária de reavaliação dos alertas de caixa
-- [ ] 9.7 `Services`: encerramento automático do alerta quando a condição deixa de existir, e dispensa pelo usuário
-- [ ] 9.8 `Services`: entrega dos alertas apenas ao dono do tenant, nunca a quem tem somente leitura
-- [ ] 9.9 `Api`: endpoints `V1` de listagem e de dispensa de alerta
-- [ ] 9.10 Testes unitários: estouro de orçamento, categoria sem orçamento não alerta, estouro corrigido encerra, insuficiência de caixa projetada e ausência de duplicação da mesma condição
-- [ ] 9.11 Teste unitário: estouro e insuficiência simultâneos produzem dois alertas distintos, nunca um combinado
+- [x] 9.1 `Domain`: entidade `AlertaEntity` com chave de condição e estados aberto, encerrado e dispensado
+- [x] 9.2 `Repository`: repositórios Read/Write de alerta, com busca por chave de condição
+- [x] 9.3 `Services`: avaliação do alerta de competência ao criar, alterar, remover ou reclassificar lançamento
+- [x] 9.4 `Services`: projeção de saldo por data a partir da renda prevista e das saídas de caixa previstas
+- [x] 9.5 `Services`: avaliação do alerta de caixa, emitindo antes da data projetada de insuficiência
+- [x] 9.6 `Services`: rotina diária de reavaliação dos alertas de caixa
+- [x] 9.7 `Services`: encerramento automático do alerta quando a condição deixa de existir, e dispensa pelo usuário
+- [x] 9.8 `Services`: entrega dos alertas apenas ao dono do tenant, nunca a quem tem somente leitura
+- [x] 9.9 `Api`: endpoints `V1` de listagem e de dispensa de alerta
+- [x] 9.10 Testes unitários: estouro de orçamento, categoria sem orçamento não alerta, estouro corrigido encerra, insuficiência de caixa projetada e ausência de duplicação da mesma condição
+- [x] 9.11 Teste unitário: estouro e insuficiência simultâneos produzem dois alertas distintos, nunca um combinado
 
 ## 10. Onboarding progressivo
 

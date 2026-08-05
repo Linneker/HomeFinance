@@ -1,6 +1,7 @@
 using System.Reflection;
 using Acme.Sistemas.Core;
 using Acme.Sistemas.Core.Mediators;
+using Acme.Sistemas.Core.Mediators.Notification;
 using Acme.Sistemas.Services.UnitTest.Fixture;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -117,5 +118,23 @@ public sealed class MediatorTests
         var mediator = services.BuildServiceProvider().GetRequiredService<IMediator>();
 
         await mediator.PublishAsync(new MediatorFixture.AlgoAconteceu("sem-ouvinte"));
+    }
+
+    /// <summary>
+    /// Um registro que resolve para nulo é pulado, e os demais ouvintes continuam recebendo.
+    /// </summary>
+    /// <remarks>
+    /// Acontece com fábrica condicional — o registro existe, a instância não. Estourar aqui
+    /// faria um ouvinte desligado impedir a entrega do evento a todos os outros.
+    /// </remarks>
+    [Fact]
+    public async Task PublishAsync_ignora_ouvinte_que_resolve_para_nulo()
+    {
+        var (mediator, rastro) = Montar(services =>
+            services.AddScoped<INotificationHandler<MediatorFixture.AlgoAconteceu>>(_ => null!));
+
+        await mediator.PublishAsync(new MediatorFixture.AlgoAconteceu("com-nulo"));
+
+        Assert.Contains(rastro.Passos, passo => passo.Contains("ouvinte", StringComparison.Ordinal));
     }
 }

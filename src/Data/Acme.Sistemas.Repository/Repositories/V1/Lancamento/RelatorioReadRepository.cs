@@ -3,10 +3,19 @@ using Acme.Sistemas.Domain.Entities.Relatorios;
 using Acme.Sistemas.Domain.Interfaces.Repository;
 using Acme.Sistemas.Infrastructure.Databases.Configuration;
 using Acme.Sistemas.Repository.Helper;
-using Acme.Sistemas.Repository.Repositories.V1.Relatorio.Query;
+using Acme.Sistemas.Repository.Repositories.V1.Lancamento.Query;
 
-namespace Acme.Sistemas.Repository.Repositories.V1.Relatorio;
+namespace Acme.Sistemas.Repository.Repositories.V1.Lancamento;
 
+/// <summary>
+/// Consultas dos relatórios mensais.
+/// </summary>
+/// <remarks>
+/// Vive na pasta de lançamento porque é sobre <c>lancamento</c> e <c>lancamento_participacao</c>
+/// que ela lê — as mesmas tabelas dos demais repositórios daqui. Uma pasta própria sugeriria um
+/// agregado que não existe: relatório não tem tabela nem escrita, é uma leitura diferente do
+/// mesmo dado.
+/// </remarks>
 public sealed class RelatorioReadRepository(TransactionManager transacoes) : IRelatorioReadRepository
 {
     public async Task<IReadOnlyList<LancamentoApuradoEntity>> ExtratoAsync(

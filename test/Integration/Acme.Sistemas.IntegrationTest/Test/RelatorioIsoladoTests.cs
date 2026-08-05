@@ -5,7 +5,6 @@ using Acme.Sistemas.Domain.Interfaces.Repository;
 using Acme.Sistemas.IntegrationTest.Config;
 using Acme.Sistemas.Repository.Repositories.V1.Categoria;
 using Acme.Sistemas.Repository.Repositories.V1.Lancamento;
-using Acme.Sistemas.Repository.Repositories.V1.Relatorio;
 using Acme.Sistemas.Repository.Repositories.V1.Usuario;
 
 namespace Acme.Sistemas.IntegrationTest.Test;

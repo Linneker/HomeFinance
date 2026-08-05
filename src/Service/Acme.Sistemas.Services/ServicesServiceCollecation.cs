@@ -1,3 +1,4 @@
+using Acme.Sistemas.Services.V1.Alertas;
 using Acme.Sistemas.Services.V1.Classificacao;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +17,10 @@ public static class ServicesServiceCollecation
         // Serviço de domínio compartilhado entre Commands: a classificação roda ao gravar
         // lançamento e ao corrigir a categoria à mão.
         services.AddScoped<IClassificacaoService, ClassificacaoService>();
+
+        // Chamado pelos behaviors de lançamento e pela rotina diária de caixa.
+        services.AddScoped<IAlertaService, AlertaService>();
+        services.AddScoped<RotinaDeAlertasDeCaixa>();
 
         // Handlers e behaviors são descobertos por AddCore(assembly) no Program.cs.
         return services;

@@ -1,4 +1,4 @@
-namespace Acme.Sistemas.Repository.Repositories.V1.Relatorio.Query;
+namespace Acme.Sistemas.Repository.Repositories.V1.Lancamento.Query;
 
 internal static class RelatorioQuery
 {

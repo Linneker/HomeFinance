@@ -6,6 +6,7 @@ using Acme.Sistemas.HomeFinance.Api.Middlewares;
 using Acme.Sistemas.Infrastructure.Databases.Configuration;
 using Acme.Sistemas.Repository;
 using Acme.Sistemas.Services;
+using Acme.Sistemas.Services.V1.Alertas;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,14 @@ builder.Services.AddServices();
 // sistema só o lê.
 builder.Services.AddScoped<ContextoRequisicaoHttp>();
 builder.Services.AddScoped<IContextoRequisicao>(sp => sp.GetRequiredService<ContextoRequisicaoHttp>());
+
+// A rotina diária assume um tenant de cada vez fora de requisição. Mesma instância do escopo:
+// registrar outra faria a rotina escrever num contexto que os repositórios não leem.
+builder.Services.AddScoped<IContextoAssumivel>(sp => sp.GetRequiredService<ContextoRequisicaoHttp>());
+
+// O alerta de caixa depende do tempo passar: sem esta rotina, uma data que ficou descoberta
+// durante a noite só seria avisada no próximo lançamento que a pessoa registrasse.
+builder.Services.AddHostedService<RotinaDiariaDeAlertas>();
 
 builder.Services.AddOpenApi();
 

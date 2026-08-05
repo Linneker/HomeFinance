@@ -1,4 +1,5 @@
 using Acme.Sistemas.Core.Mediators;
+using Acme.Sistemas.Services.V1.Alertas;
 using Microsoft.Extensions.Logging;
 
 namespace Acme.Sistemas.Services.V1.Classificacao.Command.ClassificarLancamento;
@@ -12,7 +13,8 @@ namespace Acme.Sistemas.Services.V1.Classificacao.Command.ClassificarLancamento;
 /// e a pessoa vai classificar a mesma compra todo mês.
 /// </remarks>
 public sealed class ClassificarLancamentoCommandBehavior(
-    ILogger<ClassificarLancamentoCommandBehavior> logger)
+    ILogger<ClassificarLancamentoCommandBehavior> logger,
+    IAlertaService alertas)
     : IPipelineBehavior<ClassificarLancamentoCommand, ClassificarLancamentoCommandResult>
 {
     public async Task<ClassificarLancamentoCommandResult> HandleAsync(
@@ -27,6 +29,12 @@ public sealed class ClassificarLancamentoCommandBehavior(
             logger.LogInformation(
                 "Lançamento classificado manualmente; regra criada: {CriouRegra}.",
                 resultado.RegraId is not null);
+
+            // Classificar move valor entre duas categorias do mesmo mês: uma pode ter acabado
+            // de estourar e a outra, de voltar para dentro do plano. Por isso a avaliação
+            // percorre o mês inteiro, e não só a categoria escolhida.
+            await alertas.AvaliarCompetenciaAsync(
+                resultado.CompetenciaAfetada!.Value, cancellationToken);
         }
 
         return resultado;

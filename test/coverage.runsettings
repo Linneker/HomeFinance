@@ -14,7 +14,13 @@
         <Configuration>
           <Format>cobertura</Format>
           <Include>[Acme.Sistemas.Domain]*,[Acme.Sistemas.Services]*,[Acme.Sistemas.Core]*</Include>
-          <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
+          <!--
+            CompilerGeneratedAttribute NÃO entra aqui. Todo corpo de método `async` vira uma
+            máquina de estados marcada com ele: excluí-lo apaga do relatório praticamente todo
+            handler e behavior do sistema, e o número resultante mede um subconjunto sem dizer
+            que está medindo.
+          -->
+          <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute</ExcludeByAttribute>
           <SkipAutoProps>true</SkipAutoProps>
           <UseSourceLink>false</UseSourceLink>
         </Configuration>
