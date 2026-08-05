@@ -92,6 +92,7 @@
 - [x] 7.6 `Services`: aviso quando a soma planejada do mês exceder a renda prevista, sem impedir a gravação
 - [x] 7.7 `Api`: endpoints `V1` de renda e de orçamento mensal
 - [x] 7.8 Testes unitários: renda com duas fontes, alteração de renda preservando meses anteriores, valor planejado negativo e orçamento acima da renda
+- [x] 7.9 Teste de integração: destinatário do compartilhamento vê o orçamento e a renda do dono e não consegue alterá-los
 
 ## 8. Relatórios mensais
 

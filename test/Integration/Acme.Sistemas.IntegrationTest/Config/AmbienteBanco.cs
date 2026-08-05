@@ -47,6 +47,23 @@ public sealed class AmbienteBanco : IAsyncLifetime
     /// </summary>
     public string ConnectionStringApp { get; private set; } = string.Empty;
 
+    /// <summary>
+    /// Um único <see cref="DataConfiguration"/> — e portanto um único pool — para a suíte
+    /// inteira.
+    /// </summary>
+    /// <remarks>
+    /// Cada instância abre o seu próprio pool e só o devolve ao ser descartada. Criando uma por
+    /// operação, um teste que monte algumas dezenas de repositórios esgota os
+    /// <c>max_connections</c> do PostgreSQL e derruba o teste seguinte com
+    /// <c>53300: remaining connection slots are reserved…</c> — falha que aparece longe da causa
+    /// e muda de vítima conforme a ordem de execução.
+    /// <para>
+    /// O contexto continua sendo por teste: quem o carrega é o <see cref="TransactionManager"/>,
+    /// não o pool.
+    /// </para>
+    /// </remarks>
+    private DataConfiguration? _dataConfiguration;
+
     public async Task InitializeAsync()
     {
         var dataConfiguration = new DataConfiguration(new SecretProviderDeTeste(ConnectionStringDono));
@@ -74,12 +91,20 @@ public sealed class AmbienteBanco : IAsyncLifetime
         ConnectionStringApp = ConnectionStringDono
             .Replace("Username=homefinance_owner", "Username=homefinance_app")
             .Replace("Password=troque_este_valor", $"Password={SenhaAppDeTeste}");
+
+        _dataConfiguration = new DataConfiguration(new SecretProviderDeTeste(ConnectionStringApp));
     }
 
-    public Task DisposeAsync() => Task.CompletedTask;
+    public async Task DisposeAsync()
+    {
+        if (_dataConfiguration is not null)
+        {
+            await _dataConfiguration.DisposeAsync();
+        }
+    }
 
     public TransactionManager CriarGerenciador(IContextoRequisicao contexto)
-        => new(new DataConfiguration(new SecretProviderDeTeste(ConnectionStringApp)), contexto);
+        => new(_dataConfiguration!, contexto);
 }
 
 [CollectionDefinition(nameof(BancoCollection))]
