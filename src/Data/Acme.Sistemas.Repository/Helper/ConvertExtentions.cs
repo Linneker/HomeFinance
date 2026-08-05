@@ -48,6 +48,13 @@ internal static class ConvertExtentions
     public static DateOnly Data(this DbDataReader leitor, string coluna)
         => leitor.GetFieldValue<DateOnly>(leitor.GetOrdinal(coluna));
 
+    /// <summary>Coluna <c>date</c> anulável — vigência em aberto, por exemplo.</summary>
+    public static DateOnly? DataOpcional(this DbDataReader leitor, string coluna)
+    {
+        var ordinal = leitor.GetOrdinal(coluna);
+        return leitor.IsDBNull(ordinal) ? null : leitor.GetFieldValue<DateOnly>(ordinal);
+    }
+
     public static int? InteiroOpcional(this DbDataReader leitor, string coluna)
     {
         var ordinal = leitor.GetOrdinal(coluna);

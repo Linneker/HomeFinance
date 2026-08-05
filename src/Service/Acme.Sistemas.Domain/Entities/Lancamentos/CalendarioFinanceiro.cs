@@ -36,4 +36,19 @@ public static class CalendarioFinanceiro
     /// <summary>O dia pedido, ou o último do mês quando o mês é mais curto.</summary>
     public static DateOnly NoMes(int ano, int mes, int dia) =>
         new(ano, mes, Math.Min(dia, DateTime.DaysInMonth(ano, mes)));
+
+    /// <summary>
+    /// Reduz uma data qualquer ao primeiro dia do seu mês.
+    /// </summary>
+    /// <remarks>
+    /// Competência de orçamento e vigência de renda são o mês, não o dia. Guardar sempre o
+    /// primeiro dia é o que permite comparar por igualdade — sem isso, "agosto" gravado como
+    /// 05/08 e consultado como 01/08 não se encontrariam, e o índice único por competência
+    /// deixaria passar dois orçamentos do mesmo mês.
+    /// </remarks>
+    public static DateOnly PrimeiroDiaDoMes(DateOnly data) => new(data.Year, data.Month, 1);
+
+    /// <summary>Último dia do mês anterior ao de <paramref name="data"/>.</summary>
+    public static DateOnly UltimoDiaDoMesAnterior(DateOnly data) =>
+        PrimeiroDiaDoMes(data).AddDays(-1);
 }

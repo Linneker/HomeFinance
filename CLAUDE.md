@@ -4,11 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Estado atual do repositório
 
-A solução .NET existe e compila. A implementação segue a change `homefinance-nucleo-fase-1` — o
-grupo 1 (fundação) está concluído; o restante está pendente. Consulte `tasks.md` da change antes de
-assumir que algo existe.
+A solução .NET existe e compila. A implementação segue a change `homefinance-nucleo-fase-1` — os
+grupos 1 a 6 estão concluídos (66/176); o restante está pendente. Consulte `tasks.md` da change
+antes de assumir que algo existe.
 
-Ainda **não** é um repositório git (`git init` não foi executado).
+Repositório git com remoto em `github.com/Linneker/HomeFinance`, branch `main`. O histórico
+é dividido por grupo da change (um commit por grupo). **Commit publicado não se desfaz**: um
+segredo que entre no repositório está exposto mesmo que um commit posterior o remova.
 
 ### Comandos
 

@@ -84,14 +84,14 @@
 
 ## 7. Planejamento orçamentário
 
-- [ ] 7.1 `Domain`: entidades `FonteRendaEntity` e `OrcamentoMensalEntity` com as interfaces de repositório
-- [ ] 7.2 `Repository`: repositórios Read/Write de fonte de renda e de orçamento mensal
-- [ ] 7.3 `Services`: quinteto CQRS de cadastro, alteração e remoção de fonte de renda, com vigência por mês
-- [ ] 7.4 `Services`: quinteto CQRS de definição de orçamento mensal por categoria, recusando valor negativo
-- [ ] 7.5 `Services`: cópia do orçamento do mês anterior, pedindo confirmação quando o destino já tiver valores
-- [ ] 7.6 `Services`: aviso quando a soma planejada do mês exceder a renda prevista, sem impedir a gravação
-- [ ] 7.7 `Api`: endpoints `V1` de renda e de orçamento mensal
-- [ ] 7.8 Testes unitários: renda com duas fontes, alteração de renda preservando meses anteriores, valor planejado negativo e orçamento acima da renda
+- [x] 7.1 `Domain`: entidades `FonteRendaEntity` e `OrcamentoMensalEntity` com as interfaces de repositório
+- [x] 7.2 `Repository`: repositórios Read/Write de fonte de renda e de orçamento mensal
+- [x] 7.3 `Services`: quinteto CQRS de cadastro, alteração e remoção de fonte de renda, com vigência por mês
+- [x] 7.4 `Services`: quinteto CQRS de definição de orçamento mensal por categoria, recusando valor negativo
+- [x] 7.5 `Services`: cópia do orçamento do mês anterior, pedindo confirmação quando o destino já tiver valores
+- [x] 7.6 `Services`: aviso quando a soma planejada do mês exceder a renda prevista, sem impedir a gravação
+- [x] 7.7 `Api`: endpoints `V1` de renda e de orçamento mensal
+- [x] 7.8 Testes unitários: renda com duas fontes, alteração de renda preservando meses anteriores, valor planejado negativo e orçamento acima da renda
 
 ## 8. Relatórios mensais
 

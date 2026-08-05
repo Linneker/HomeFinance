@@ -20,6 +20,12 @@ public static class RespostaHttp
         // Editar ocorrência ainda prevista não é entrada malformada: é pedido válido contra
         // um estado que não aceita. A próxima materialização a regeraria por cima.
         "ocorrencia_prevista_nao_editavel",
+
+        "fonte_renda_encerrada",
+
+        // Cópia de orçamento parada à espera de aceite. É conflito com o estado do destino,
+        // não erro de entrada: a mesma requisição, reenviada com a confirmação, passa.
+        "confirmacao_necessaria",
     ];
 
     /// <summary>
@@ -42,6 +48,7 @@ public static class RespostaHttp
         "lancamento_nao_encontrado",
         "recorrencia_nao_encontrada",
         "regra_nao_encontrada",
+        "fonte_renda_nao_encontrada",
     ];
 
     public static IResult Falha(IReadOnlyList<Error> erros)
