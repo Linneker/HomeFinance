@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Configuração de cobertura compartilhada pelos projetos de teste.
+
+  O alvo de 98% vale sobre Domain e Services — as camadas onde mora a decisão. Api,
+  Repository e Infrastructure são cobertos por integração e E2E, que não instrumentam
+  cobertura de linha aqui: medi-los junto misturaria "não testado" com "testado por outro
+  meio" e faria o número mentir nas duas direções.
+-->
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <Include>[Acme.Sistemas.Domain]*,[Acme.Sistemas.Services]*,[Acme.Sistemas.Core]*</Include>
+          <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
+          <SkipAutoProps>true</SkipAutoProps>
+          <UseSourceLink>false</UseSourceLink>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>
