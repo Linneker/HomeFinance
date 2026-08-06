@@ -104,6 +104,7 @@
 - [x] 8.6 `Api`: endpoints `V1` de extrato e de resumo mensal
 - [x] 8.7 Testes unitários: mesma compra parcelada aparece integral em julho na competência e como parcela em agosto no caixa
 - [x] 8.8 Testes unitários: categoria dentro do orçamento, categoria estourada, mês sem lançamentos e ausência de soma entre tenants
+- [x] 8.9 Teste de integração: destinatário do compartilhamento abre o relatório do dono e vê apenas os valores daquele tenant, nas duas direções da troca
 
 ## 9. Alertas
 
