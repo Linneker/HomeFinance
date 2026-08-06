@@ -119,6 +119,7 @@
 - [x] 9.9 `Api`: endpoints `V1` de listagem e de dispensa de alerta
 - [x] 9.10 Testes unitários: estouro de orçamento, categoria sem orçamento não alerta, estouro corrigido encerra, insuficiência de caixa projetada e ausência de duplicação da mesma condição
 - [x] 9.11 Teste unitário: estouro e insuficiência simultâneos produzem dois alertas distintos, nunca um combinado
+- [x] 9.12 Teste de integração: índice parcial barra a segunda emissão da condição aberta e libera a chave depois do encerramento; alerta do dono não é entregue nem alterado por quem tem somente leitura
 
 ## 10. Onboarding progressivo
 
