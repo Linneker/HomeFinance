@@ -321,6 +321,52 @@ public sealed class AssinaturaNoBancoTests(AmbienteBanco ambiente)
             .PendentesAsync(Ct));
     }
 
+    // ---------------------------------------------------------------- 11.13 (idempotência)
+
+    /// <summary>
+    /// A mesma notificação chega mais de uma vez — o provedor reenvia até receber confirmação. O
+    /// índice único <c>ux_notificacao_provedor</c> é o que garante o processamento uma só vez: a
+    /// segunda chegada é registrada como repetida e não reaplica o evento. O teste vai ao banco
+    /// porque é o índice, e não o código, que sustenta a idempotência.
+    /// </summary>
+    [Fact]
+    public async Task Notificacao_repetida_e_processada_uma_unica_vez_contra_o_indice()
+    {
+        var contexto = new ContextoFixo();
+
+        var conta = await CriarContaAsync(contexto);
+
+        var assinatura = await AssinarAsync(
+            contexto, conta, SituacaoAssinatura.Suspensa,
+            DateTimeOffset.UtcNow.AddDays(-40), DateTimeOffset.UtcNow.AddDays(-1),
+            referencia: $"GPA.{Guid.CreateVersion7():N}");
+
+        var servico = Servico(contexto);
+        var identificador = $"evento-reenviado-{Guid.CreateVersion7():N}";
+
+        // Primeira chegada: renovação aplicada, assinatura volta a ativa.
+        var primeira = await servico.AplicarNotificacaoAsync(
+            CanalPagamento.GooglePlay, identificador, EventoDoProvedor.Renovacao,
+            assinatura.ComprovanteReferencia, "{}", Ct);
+
+        Assert.True(primeira.Processada);
+        Assert.Equal(SituacaoAssinatura.Ativa, primeira.SituacaoResultante);
+
+        // Segunda chegada do MESMO identificador: barrada pelo índice, sem reaplicar.
+        var segunda = await servico.AplicarNotificacaoAsync(
+            CanalPagamento.GooglePlay, identificador, EventoDoProvedor.Estorno,
+            assinatura.ComprovanteReferencia, "{}", Ct);
+
+        Assert.False(segunda.Processada);
+        Assert.Null(segunda.SituacaoResultante);
+
+        // O estorno da repetição não passou: a assinatura segue ativa.
+        Ativar(contexto, conta);
+        var vigente = await new AssinaturaWriteRepository(ambiente.CriarGerenciador(contexto))
+            .VigenteDoUsuarioAsync(conta.UsuarioId, Ct);
+        Assert.Equal(SituacaoAssinatura.Ativa, vigente!.Situacao);
+    }
+
     // ---------------------------------------------------------------- 11.24
 
     /// <summary>

@@ -18,6 +18,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- A tradução do rótulo do provedor para o evento do domínio é interna ao endpoint, mas
+         carrega a decisão de segurança "desconhecido vira estorno" — testada pela integração. -->
+    <InternalsVisibleTo Include="Acme.Sistemas.IntegrationTest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Service\Acme.Sistemas.Services\Acme.Sistemas.Services.csproj" />
     <ProjectReference Include="..\..\Service\Acme.Sistemas.Core\Acme.Sistemas.Core.csproj" />
     <ProjectReference Include="..\..\Service\Acme.Sistemas.Domain\Acme.Sistemas.Domain.csproj" />

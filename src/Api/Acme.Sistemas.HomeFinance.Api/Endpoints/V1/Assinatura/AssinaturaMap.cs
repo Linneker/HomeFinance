@@ -28,7 +28,9 @@ internal static class AssinaturaMap
     /// </remarks>
     public static EventoDoProvedor ParaEvento(this string rotulo) => rotulo.ToLowerInvariant() switch
     {
-        "renewal" or "renovacao" or "payment.approved" or "PAYMENT_CONFIRMED" => EventoDoProvedor.Renovacao,
+        // Os rótulos são comparados já em minúsculas: manter aqui uma variante com maiúsculas
+        // (p. ex. "PAYMENT_CONFIRMED") a tornaria inalcançável, e o evento cairia no estorno.
+        "renewal" or "renovacao" or "payment.approved" or "payment_confirmed" => EventoDoProvedor.Renovacao,
         "cancel" or "cancelamento" or "subscription.cancelled" => EventoDoProvedor.CancelamentoAgendado,
         _ => EventoDoProvedor.Estorno,
     };

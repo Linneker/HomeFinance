@@ -149,8 +149,8 @@
 - [x] 11.11 `Services`: exigência de assinatura ativa do destinatário para abrir tenant compartilhado
 - [x] 11.12 `ExternalIntegration`: validação de comprovante de compra in-app junto às lojas, com credenciais no OpenBao
 - [x] 11.13 `Api`: endpoint de recebimento das notificações das lojas, com processamento idempotente por identificador
-- [ ] 11.14 `ExternalIntegration` e `Api`: integração e notificações do Mercado Pago
-- [ ] 11.15 `ExternalIntegration` e `Api`: integração e notificações do Asaas
+- [x] 11.14 `ExternalIntegration` e `Api`: integração e notificações do Mercado Pago
+- [x] 11.15 `ExternalIntegration` e `Api`: integração e notificações do Asaas
 - [x] 11.16 `Services`: vínculo do comprovante à conta do aplicativo, recusando reutilização em outra conta
 - [x] 11.17 `Services`: rotina de reconciliação periódica das assinaturas vigentes junto aos provedores
 - [x] 11.18 `Api`: endpoints `V1` de catálogo de planos, situação da assinatura e contratação
@@ -160,6 +160,9 @@
 - [x] 11.22 Teste de integração: suspensão do dono derruba o acesso compartilhado e mantém o tenant próprio do destinatário operante
 - [x] 11.23 Teste de integração: regularização restaura análises, alertas e compartilhamentos sem ação adicional do usuário
 - [x] 11.24 Teste de integração: reconciliação corrige assinatura divergente quando a notificação não foi entregue
+
+- [x] 11.25 Testes unitários dos adaptadores de pagamento: tradução da resposta de cada provedor, credencial buscada no cofre a cada chamada e nenhum dado de cartão no tráfego — compra in-app (App Store/Google Play) e gateways Mercado Pago/Asaas, com Bearer e cabeçalho próprio
+- [x] 11.26 Teste de integração: notificação repetida é processada uma única vez contra o índice `ux_notificacao_provedor`; e o mapa de rótulos do provedor traduz o desconhecido em estorno, nunca em renovação
 
 ## 12. Exportação de dados
 
