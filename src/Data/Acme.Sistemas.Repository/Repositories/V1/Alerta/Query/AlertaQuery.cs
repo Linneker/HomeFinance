@@ -30,4 +30,10 @@ internal static class AlertaQuery
         """;
 
     public const string TenantsParaRotina = "SELECT tenant_id, usuario_id FROM tenants_para_rotina()";
+
+    public const string TenantDoUsuarioParaRotina = """
+        SELECT tenant_id
+        FROM tenants_para_rotina()
+        WHERE usuario_id = @usuarioId
+        """;
 }

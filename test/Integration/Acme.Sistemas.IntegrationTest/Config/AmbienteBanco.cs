@@ -1,6 +1,7 @@
 using Acme.Sistemas.Infrastructure.Databases.Configuration;
 using Acme.Sistemas.Infrastructure.Databases.Migrations.Configuration;
 using Acme.Sistemas.Infrastructure.Secrets;
+using Acme.Sistemas.Services.V1.Alertas;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Acme.Sistemas.IntegrationTest.Config;
@@ -16,13 +17,25 @@ public sealed class SecretProviderDeTeste(string connectionString) : ISecretProv
 }
 
 /// <summary>Contexto de requisição fixo, montado por cada teste.</summary>
-public sealed class ContextoFixo : IContextoRequisicao
+/// <remarks>
+/// Implementa também <see cref="IContextoAssumivel"/>: o trabalho disparado pela regularização da
+/// assinatura assume o tenant do titular como a rotina de alertas faz, e o teste que exercita esse
+/// caminho precisa que a mesma instância de contexto usada pelos repositórios seja a assumida.
+/// </remarks>
+public sealed class ContextoFixo : IContextoRequisicao, IContextoAssumivel
 {
     public Guid? UsuarioId { get; set; }
 
     public Guid? TenantId { get; set; }
 
     public bool SomenteLeitura { get; set; } = true;
+
+    public void Assumir(Guid usuarioId, Guid tenantId)
+    {
+        UsuarioId = usuarioId;
+        TenantId = tenantId;
+        SomenteLeitura = false;
+    }
 }
 
 /// <summary>

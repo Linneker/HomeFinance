@@ -33,4 +33,14 @@ public sealed class RotinaReadRepository(TransactionManager transacoes) : IRotin
 
         return tenants;
     }
+
+    public async Task<Guid?> TenantDoUsuarioAsync(Guid usuarioId, CancellationToken cancellationToken)
+    {
+        await using var escopo = await transacoes.AbrirEscritaAsync(cancellationToken);
+        await using var comando = new EscopoSql(escopo.Conexao, escopo.Transacao)
+            .Comando(AlertaQuery.TenantDoUsuarioParaRotina)
+            .Com("usuarioId", usuarioId);
+
+        return await comando.ExecuteScalarAsync(cancellationToken) as Guid?;
+    }
 }

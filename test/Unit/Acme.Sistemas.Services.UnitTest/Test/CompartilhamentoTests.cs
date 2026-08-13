@@ -227,6 +227,48 @@ public sealed class CompartilhamentoTests
             Times.Never);
     }
 
+    /// <summary>
+    /// Cota esgotada: o plano permite N e todos os N estão em uso. A recusa vem por último, depois
+    /// de o pedido ter passado por tudo o mais — só faz sentido dizer "seu plano acabou" para uma
+    /// concessão que de outro modo aconteceria.
+    /// </summary>
+    [Fact]
+    public async Task Cota_esgotada_recusa_a_concessao()
+    {
+        var tenants = Repositorio(TenantAna, Bruno);
+        var handler = new CompartilharTenantCommandHandler(
+            tenants.Object, ComCota(total: 1, usada: 1), new RelogioFixo());
+
+        var resultado = await handler.HandleAsync(Comando(), CancellationToken.None);
+
+        Assert.False(resultado.Sucesso);
+        Assert.Equal(
+            CompartilharTenantCommandHandler.CodigoCotaEsgotada, resultado.Erros[0].Codigo);
+        tenants.Verify(
+            r => r.ConcederAsync(It.IsAny<TenantCompartilhamentoEntity>(), It.IsAny<CancellationToken>()),
+            Times.Never);
+    }
+
+    /// <summary>
+    /// Plano sem cota nenhuma não concede compartilhamento, e a mensagem é a do plano — não a de
+    /// cota atingida —, porque o caminho de saída para a pessoa é outro: contratar um plano que
+    /// inclua o recurso, não revogar um compartilhamento que ela não tem.
+    /// </summary>
+    [Fact]
+    public async Task Plano_sem_cota_nao_concede_e_aponta_o_plano()
+    {
+        var tenants = Repositorio(TenantAna, Bruno);
+        var handler = new CompartilharTenantCommandHandler(
+            tenants.Object, ComCota(total: 0, usada: 0), new RelogioFixo());
+
+        var resultado = await handler.HandleAsync(Comando(), CancellationToken.None);
+
+        Assert.False(resultado.Sucesso);
+        Assert.Equal(
+            CompartilharTenantCommandHandler.CodigoCotaEsgotada, resultado.Erros[0].Codigo);
+        Assert.Contains("plano não inclui", resultado.Erros[0].Mensagem, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public async Task Revogacao_usa_o_tenant_do_autenticado()
     {

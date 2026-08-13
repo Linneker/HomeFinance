@@ -141,25 +141,25 @@
 - [x] 11.3 Migration de dados: semear o catálogo inicial de planos com as respectivas cotas de compartilhamento
 - [x] 11.4 `Repository`: repositórios Read/Write de plano, assinatura e transação
 - [x] 11.5 `Services`: `AssinaturaService` resolvendo a situação vigente da conta, única fonte consultada para decisão de acesso
-- [ ] 11.6 `Services`: transição de situação da assinatura entre ativa, carência, suspensa e cancelada, com prazo de carência configurável
-- [ ] 11.7 `Services`: Behavior de assinatura restringindo os recursos derivados — análises, alertas, orientações e compartilhamento — independente do Behavior de onboarding e sem alcançar o registro de lançamentos
-- [ ] 11.8 `Services`: retenção de documento enviado na suspensão, marcado como pendente, e disparo do processamento da fila retida na regularização
-- [ ] 11.9 `Services`: validação de cota do plano na concessão de compartilhamento e recusa quando esgotada ou assinatura inativa
-- [ ] 11.10 `Services`: suspensão e restabelecimento em cascata dos compartilhamentos concedidos, preservando o tenant próprio do destinatário
-- [ ] 11.11 `Services`: exigência de assinatura ativa do destinatário para abrir tenant compartilhado
+- [x] 11.6 `Services`: transição de situação da assinatura entre ativa, carência, suspensa e cancelada, com prazo de carência configurável
+- [x] 11.7 `Services`: Behavior de assinatura restringindo os recursos derivados — análises, alertas, orientações e compartilhamento — independente do Behavior de onboarding e sem alcançar o registro de lançamentos
+- [x] 11.8 `Services`: retenção de documento enviado na suspensão, marcado como pendente, e disparo do processamento da fila retida na regularização
+- [x] 11.9 `Services`: validação de cota do plano na concessão de compartilhamento e recusa quando esgotada ou assinatura inativa
+- [x] 11.10 `Services`: suspensão e restabelecimento em cascata dos compartilhamentos concedidos, preservando o tenant próprio do destinatário
+- [x] 11.11 `Services`: exigência de assinatura ativa do destinatário para abrir tenant compartilhado
 - [x] 11.12 `ExternalIntegration`: validação de comprovante de compra in-app junto às lojas, com credenciais no OpenBao
-- [ ] 11.13 `Api`: endpoint de recebimento das notificações das lojas, com processamento idempotente por identificador
+- [x] 11.13 `Api`: endpoint de recebimento das notificações das lojas, com processamento idempotente por identificador
 - [ ] 11.14 `ExternalIntegration` e `Api`: integração e notificações do Mercado Pago
 - [ ] 11.15 `ExternalIntegration` e `Api`: integração e notificações do Asaas
-- [ ] 11.16 `Services`: vínculo do comprovante à conta do aplicativo, recusando reutilização em outra conta
-- [ ] 11.17 `Services`: rotina de reconciliação periódica das assinaturas vigentes junto aos provedores
-- [ ] 11.18 `Api`: endpoints `V1` de catálogo de planos, situação da assinatura e contratação
-- [ ] 11.19 Testes unitários: com assinatura suspensa, lançamento é gravado, extrato é lido, exclusão de conta funciona, e resumo por categoria e alertas ficam indisponíveis
-- [ ] 11.20 Testes unitários: cota esgotada, concessão com assinatura suspensa, destinatário sem assinatura ativa e independência entre as restrições de onboarding e de assinatura
-- [ ] 11.21 Testes unitários: comprovante não confirmado pelo provedor, comprovante já utilizado e notificação repetida
-- [ ] 11.22 Teste de integração: suspensão do dono derruba o acesso compartilhado e mantém o tenant próprio do destinatário operante
-- [ ] 11.23 Teste de integração: regularização restaura análises, alertas e compartilhamentos sem ação adicional do usuário
-- [ ] 11.24 Teste de integração: reconciliação corrige assinatura divergente quando a notificação não foi entregue
+- [x] 11.16 `Services`: vínculo do comprovante à conta do aplicativo, recusando reutilização em outra conta
+- [x] 11.17 `Services`: rotina de reconciliação periódica das assinaturas vigentes junto aos provedores
+- [x] 11.18 `Api`: endpoints `V1` de catálogo de planos, situação da assinatura e contratação
+- [x] 11.19 Testes unitários: com assinatura suspensa, lançamento é gravado, extrato é lido, exclusão de conta funciona, e resumo por categoria e alertas ficam indisponíveis
+- [x] 11.20 Testes unitários: cota esgotada, concessão com assinatura suspensa, destinatário sem assinatura ativa e independência entre as restrições de onboarding e de assinatura
+- [x] 11.21 Testes unitários: comprovante não confirmado pelo provedor, comprovante já utilizado e notificação repetida
+- [x] 11.22 Teste de integração: suspensão do dono derruba o acesso compartilhado e mantém o tenant próprio do destinatário operante
+- [x] 11.23 Teste de integração: regularização restaura análises, alertas e compartilhamentos sem ação adicional do usuário
+- [x] 11.24 Teste de integração: reconciliação corrige assinatura divergente quando a notificação não foi entregue
 
 ## 12. Exportação de dados
 

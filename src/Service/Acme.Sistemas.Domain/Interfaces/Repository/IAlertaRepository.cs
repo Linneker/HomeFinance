@@ -46,6 +46,17 @@ public interface IAlertaWriteRepository
 public interface IRotinaReadRepository
 {
     Task<IReadOnlyList<TenantParaRotina>> TenantsAtivosAsync(CancellationToken cancellationToken);
+
+    /// <summary>
+    /// O tenant próprio do usuário informado, sem depender do contexto da requisição.
+    /// </summary>
+    /// <remarks>
+    /// Serve ao trabalho disparado pela regularização da assinatura, que pode chegar pela
+    /// notificação do provedor — sem token, sem usuário e sem tenant. Sai da mesma função
+    /// <c>SECURITY DEFINER</c> da rotina, e não de uma abertura nova: o problema é o mesmo, e
+    /// duas aberturas para a mesma pergunta seriam duas para manter em dia.
+    /// </remarks>
+    Task<Guid?> TenantDoUsuarioAsync(Guid usuarioId, CancellationToken cancellationToken);
 }
 
 /// <param name="UsuarioId">Dono do tenant. A rotina age sempre como o dono, nunca como convidado.</param>

@@ -1,3 +1,4 @@
+using Acme.Sistemas.Core.Mediators;
 using Acme.Sistemas.Domain.Entities.Assinaturas;
 using Acme.Sistemas.Domain.Enums;
 using Acme.Sistemas.Domain.Interfaces.Repository;
@@ -13,6 +14,7 @@ public sealed class AssinaturaService(
     IPlanoReadRepository planos,
     IEnumerable<IProvedorDePagamento> provedores,
     IContextoRequisicao contexto,
+    IMediator mediator,
     TimeProvider relogio,
     ILogger<AssinaturaService> logger)
     : IAssinaturaService
@@ -153,6 +155,10 @@ public sealed class AssinaturaService(
 
             await assinaturas.AtualizarSituacaoAsync(atual, cancellationToken);
 
+            // Chegar aqui já significa que a assinatura estava suspensa — a recusa por
+            // "já vigente" acontece bem antes. É a virada que restabelece os recursos.
+            await RegularizadaAsync(contexto.UsuarioId.Value, atual.Id, cancellationToken);
+
             return ResultadoDaContratacao.Contratada(atual.Id);
         }
 
@@ -169,6 +175,11 @@ public sealed class AssinaturaService(
         };
 
         await assinaturas.CriarAsync(nova, cancellationToken);
+
+        // Conta sem assinatura é tratada como suspensa em todo o resto do sistema; a primeira
+        // contratação é, por isso, a mesma virada. Não ter fila a liberar é o caso comum, e não
+        // uma exceção que justifique tratar esta transição de outro jeito.
+        await RegularizadaAsync(contexto.UsuarioId.Value, nova.Id, cancellationToken);
 
         return ResultadoDaContratacao.Contratada(nova.Id);
     }
@@ -205,12 +216,30 @@ public sealed class AssinaturaService(
             return new ResultadoDaNotificacao(true, null);
         }
 
+        var vigenteAntes = Vigente(assinatura.SituacaoEm(agora, Carencia));
+
         AplicarEvento(assinatura, evento, agora);
 
         await assinaturas.AtualizarSituacaoAsync(assinatura, cancellationToken);
 
+        // A renovação que chega depois da suspensão é regularização como qualquer outra: o
+        // usuário pagou e não vai pedir nada além disso.
+        if (!vigenteAntes && Vigente(assinatura.SituacaoEm(agora, Carencia)))
+        {
+            await RegularizadaAsync(assinatura.UsuarioId, assinatura.Id, cancellationToken);
+        }
+
         return new ResultadoDaNotificacao(true, assinatura.Situacao);
     }
+
+    private static bool Vigente(SituacaoAssinatura situacao) =>
+        situacao is SituacaoAssinatura.Ativa or SituacaoAssinatura.Carencia;
+
+    private Task RegularizadaAsync(
+        Guid usuarioId,
+        Guid assinaturaId,
+        CancellationToken cancellationToken) =>
+        mediator.PublishAsync(new AssinaturaRegularizada(usuarioId, assinaturaId), cancellationToken);
 
     /// <summary>
     /// Traduz o evento do provedor em mudança de estado.
