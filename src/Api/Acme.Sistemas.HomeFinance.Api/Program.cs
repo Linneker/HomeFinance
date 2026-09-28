@@ -42,6 +42,11 @@ builder.Services.AddScoped<IContextoAssumivel>(sp => sp.GetRequiredService<Conte
 // durante a noite só seria avisada no próximo lançamento que a pessoa registrasse.
 builder.Services.AddHostedService<RotinaDiariaDeAlertas>();
 
+// Geração assíncrona da exportação: um consome a fila e monta os arquivos, o outro varre os
+// vencidos. Ambos toleram a indisponibilidade das dependências externas sem derrubar a Api.
+builder.Services.AddHostedService<ConsumidorDeExportacao>();
+builder.Services.AddHostedService<RotinaDiariaDeExpiracao>();
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();

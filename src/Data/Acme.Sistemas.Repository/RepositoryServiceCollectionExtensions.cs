@@ -1,8 +1,10 @@
 using Acme.Sistemas.Domain.Interfaces.Repository;
 using Acme.Sistemas.Repository.Repositories.V1.Alerta;
 using Acme.Sistemas.Repository.Repositories.V1.Assinatura;
+using Acme.Sistemas.Repository.Repositories.V1.Auditoria;
 using Acme.Sistemas.Repository.Repositories.V1.Categoria;
 using Acme.Sistemas.Repository.Repositories.V1.DocumentoRetido;
+using Acme.Sistemas.Repository.Repositories.V1.Exportacao;
 using Acme.Sistemas.Repository.Repositories.V1.FonteRenda;
 using Acme.Sistemas.Repository.Repositories.V1.Lancamento;
 using Acme.Sistemas.Repository.Repositories.V1.Onboarding;
@@ -53,6 +55,13 @@ public static class RepositoryServiceCollectionExtensions
         services.AddScoped<IPlanoReadRepository>(sp => sp.GetRequiredService<AssinaturaReadRepository>());
         services.AddScoped<IAssinaturaWriteRepository, AssinaturaWriteRepository>();
         services.AddScoped<IDocumentoRetidoRepository, DocumentoRetidoRepository>();
+
+        services.AddScoped<IExportacaoHabilitacaoReadRepository, ExportacaoHabilitacaoReadRepository>();
+        services.AddScoped<IExportacaoHabilitacaoWriteRepository, ExportacaoHabilitacaoWriteRepository>();
+        services.AddScoped<IExportacaoSolicitacaoReadRepository, ExportacaoSolicitacaoReadRepository>();
+        services.AddScoped<IExportacaoSolicitacaoWriteRepository, ExportacaoSolicitacaoWriteRepository>();
+        services.AddScoped<IExportacaoDadosReadRepository, ExportacaoDadosReadRepository>();
+        services.AddScoped<IAuditoriaRepository, AuditoriaRepository>();
 
         return services;
     }

@@ -1,6 +1,9 @@
 using Acme.Sistemas.Infrastructure.Databases.Configuration;
 using Acme.Sistemas.Infrastructure.Databases.Migrations.Configuration;
+using Acme.Sistemas.Infrastructure.FeatureFlags;
+using Acme.Sistemas.Infrastructure.Messaging;
 using Acme.Sistemas.Infrastructure.Secrets;
+using Acme.Sistemas.Infrastructure.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,7 +25,21 @@ public static class InfrastructureServiceCollectionExtensions
         });
 
         services.AddHttpClient<ISecretProvider, OpenBaoSecretProvider>();
+
+        // Lido por caminho, em runtime, a cada consulta: é o que permite ligar/desligar o
+        // recurso sem republicar. O arquivo é copiado para a saída pela subpasta FeatureFlags.
+        services.AddSingleton<IFeatureFlagService>(_ =>
+            new FeatureFlagService(
+                Path.Combine(AppContext.BaseDirectory, "FeatureFlags", "featureflags.json")));
+
         services.AddSingleton<IDataConfiguration, DataConfiguration>();
+
+        // Storage e fila são singletons: seguram conexão viva (MinIO) e canal/conexão do broker,
+        // resolvidos do cofre na primeira operação. Recriá-los por requisição reabriria socket a
+        // cada exportação.
+        services.AddSingleton<IArmazenamentoArquivos, MinioArmazenamentoArquivos>();
+        services.AddSingleton<IFilaExportacao, RabbitMqFilaExportacao>();
+
         services.AddScoped<MigrationRunner>();
         services.AddScoped<TransactionManager>();
 

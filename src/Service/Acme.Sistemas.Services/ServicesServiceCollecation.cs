@@ -1,6 +1,8 @@
 using Acme.Sistemas.Services.V1.Alertas;
 using Acme.Sistemas.Services.V1.Assinaturas;
 using Acme.Sistemas.Services.V1.Classificacao;
+using Acme.Sistemas.Services.V1.Exportacao;
+using Acme.Sistemas.Services.V1.Exportacao.Formatadores;
 using Acme.Sistemas.Services.V1.Onboarding;
 using Acme.Sistemas.Core;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +31,17 @@ public static class ServicesServiceCollecation
         services.AddScoped<IAssinaturaService, AssinaturaService>();
         services.AddScoped<RotinaDeReconciliacao>();
         services.AddScoped<FilaDeDocumentosRetidos>();
+
+        // Exportação de dados. Um formatador por formato; o resolvedor os recebe por injeção e
+        // recusa o que não estiver registrado. O gerador é o trabalhador da fila; a rotina de
+        // expiração limpa os arquivos vencidos. O aviso é o seam de entrega ao titular.
+        services.AddScoped<IFormatadorExportacao, FormatadorCsv>();
+        services.AddScoped<IFormatadorExportacao, FormatadorJson>();
+        services.AddScoped<IFormatadorExportacao, FormatadorTexto>();
+        services.AddScoped<IResolvedorDeFormato, ResolvedorDeFormato>();
+        services.AddScoped<IAvisoTitular, AvisoTitularPorLog>();
+        services.AddScoped<GeradorDeExportacao>();
+        services.AddScoped<RotinaDeExpiracao>();
 
         // Registrado antes da varredura de assembly: o primeiro behavior registrado é o mais
         // externo, e a recusa por onboarding precisa acontecer antes do handler e antes dos

@@ -166,21 +166,21 @@
 
 ## 12. Exportação de dados
 
-- [ ] 12.1 `Infrastructure`: `featureflags.json` e `FeatureFlagService` conforme o blueprint, com a flag de exportação desligada por padrão
-- [ ] 12.2 `Domain` e migration: entidades `ExportacaoHabilitacaoEntity` e `ExportacaoSolicitacaoEntity`, com motivo, autor e situação
-- [ ] 12.3 `Repository`: repositórios Read/Write de habilitação e de solicitação de exportação
-- [ ] 12.4 `Services` e `Api`: habilitação e desabilitação da exportação por conta, exigindo motivo e registrando autor e data, expostas somente em endpoint de perfil administrativo
-- [ ] 12.5 `Services`: geração assíncrona da exportação sob o contexto do próprio titular, publicando na fila e gravando o arquivo no MinIO
-- [ ] 12.6 `Services`: formatadores de saída — ao menos um formato de leitura humana e um de dados estruturados — recusando formato não suportado
-- [ ] 12.7 `Services`: recusa de exportação de tenant recebido por compartilhamento
-- [ ] 12.8 `Services`: prevalência da habilitação sobre a restrição de assinatura
-- [ ] 12.9 `Services`: aviso ao titular na habilitação e na conclusão do arquivo, entregue mesmo com notificações suspensas
-- [ ] 12.10 `Services`: expiração do arquivo, remoção do objeto no MinIO e download vinculado à conta solicitante
-- [ ] 12.11 `Services`: registro em auditoria de habilitação, desabilitação, solicitação e download
-- [ ] 12.12 `Api`: endpoints `V1` de solicitação de exportação, consulta de situação e download
-- [ ] 12.13 Testes unitários: recusa sem habilitação, habilitação sem motivo, formato não suportado, recusa para destinatário de compartilhamento e prevalência sobre assinatura suspensa
-- [ ] 12.14 Teste de integração: requisição vinda do perfil de usuário final não consegue habilitar a exportação, em nenhum endpoint
-- [ ] 12.15 Teste de integração: arquivo expirado é removido e o download passa a ser recusado, e download por outra conta é recusado
+- [x] 12.1 `Infrastructure`: `featureflags.json` e `FeatureFlagService` conforme o blueprint, com a flag de exportação desligada por padrão
+- [x] 12.2 `Domain` e migration: entidades `ExportacaoHabilitacaoEntity` e `ExportacaoSolicitacaoEntity`, com motivo, autor e situação
+- [x] 12.3 `Repository`: repositórios Read/Write de habilitação e de solicitação de exportação
+- [x] 12.4 `Services` e `Api`: habilitação e desabilitação da exportação por conta, exigindo motivo e registrando autor e data, expostas somente em endpoint de perfil administrativo
+- [x] 12.5 `Services`: geração assíncrona da exportação sob o contexto do próprio titular, publicando na fila e gravando o arquivo no MinIO
+- [x] 12.6 `Services`: formatadores de saída — ao menos um formato de leitura humana e um de dados estruturados — recusando formato não suportado
+- [x] 12.7 `Services`: recusa de exportação de tenant recebido por compartilhamento
+- [x] 12.8 `Services`: prevalência da habilitação sobre a restrição de assinatura
+- [x] 12.9 `Services`: aviso ao titular na habilitação e na conclusão do arquivo, entregue mesmo com notificações suspensas
+- [x] 12.10 `Services`: expiração do arquivo, remoção do objeto no MinIO e download vinculado à conta solicitante
+- [x] 12.11 `Services`: registro em auditoria de habilitação, desabilitação, solicitação e download
+- [x] 12.12 `Api`: endpoints `V1` de solicitação de exportação, consulta de situação e download
+- [x] 12.13 Testes unitários: recusa sem habilitação, habilitação sem motivo, formato não suportado, recusa para destinatário de compartilhamento e prevalência sobre assinatura suspensa
+- [x] 12.14 Teste de integração: requisição vinda do perfil de usuário final não consegue habilitar a exportação, em nenhum endpoint
+- [x] 12.15 Teste de integração: arquivo expirado é removido e o download passa a ser recusado, e download por outra conta é recusado
 
 ## 13. Aplicativo MAUI (superfície do usuário final)
 

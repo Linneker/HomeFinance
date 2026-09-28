@@ -63,7 +63,11 @@ public static class AutenticacaoConfig
                 };
             });
 
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorization(opcoes =>
+            opcoes.AddPolicy(
+                PerfilAdministrativo.Politica,
+                politica => politica.RequireClaim(PerfilAdministrativo.Claim, PerfilAdministrativo.Administrador)));
+
         builder.Services.AddHttpContextAccessor();
 
         return builder;

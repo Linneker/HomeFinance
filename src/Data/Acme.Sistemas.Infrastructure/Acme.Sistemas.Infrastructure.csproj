@@ -11,6 +11,15 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.10" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.10" />
     <PackageReference Include="Npgsql" Version="10.0.3" />
+    <PackageReference Include="Minio" Version="6.0.4" />
+    <PackageReference Include="RabbitMQ.Client" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Precisa estar ao lado do binário: o FeatureFlagService o lê por caminho, em runtime. -->
+    <None Update="FeatureFlags\featureflags.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <PropertyGroup>
