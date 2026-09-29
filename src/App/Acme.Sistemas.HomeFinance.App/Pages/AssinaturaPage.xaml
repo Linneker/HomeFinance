@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="Acme.Sistemas.HomeFinance.App.Pages.AssinaturaPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Assinatura">
+
+    <RefreshView x:Name="Atualizar" Refreshing="AoAtualizar">
+        <ScrollView>
+            <VerticalStackLayout Padding="20" Spacing="16">
+
+                <Label x:Name="LabelErro" TextColor="Red" IsVisible="False" />
+
+                <Border StrokeShape="RoundRectangle 12" Padding="16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Situação" FontAttributes="Bold" TextColor="Gray" />
+                        <Label x:Name="LabelSituacao" FontSize="22" FontAttributes="Bold" />
+                        <Label x:Name="LabelPlano" />
+                        <Label x:Name="LabelCota" TextColor="Gray" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Caminho de regularização: aparece quando a assinatura não está ativa. -->
+                <Border x:Name="PainelRegularizar" IsVisible="False" StrokeShape="RoundRectangle 12" Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label x:Name="LabelRegularizar" />
+                        <Button Text="Regularizar / trocar plano" Clicked="AoRegularizar" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Button Text="Ver planos" BackgroundColor="Transparent" TextColor="{StaticResource Primary}" Clicked="AoVerPlanos" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

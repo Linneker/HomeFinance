@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="Acme.Sistemas.HomeFinance.App.Pages.OrcamentoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Orçamento">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
+
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Padding="12,8" ColumnSpacing="8">
+            <Button Grid.Column="0" Text="‹" Clicked="AoMesAnterior" WidthRequest="44" />
+            <Label Grid.Column="1" x:Name="LabelMes" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold" />
+            <Button Grid.Column="2" Text="›" Clicked="AoProximoMes" WidthRequest="44" />
+        </Grid>
+
+        <Border Grid.Row="1" Margin="12,4" Padding="12" StrokeShape="RoundRectangle 10">
+            <VerticalStackLayout Spacing="2">
+                <Label x:Name="LabelTotais" />
+                <Label x:Name="LabelAviso" TextColor="#B7791F" IsVisible="False" />
+            </VerticalStackLayout>
+        </Border>
+
+        <Button Grid.Row="2" x:Name="BotaoCopiar" Text="Copiar do mês anterior" Margin="12,0" Clicked="AoCopiar" />
+
+        <RefreshView Grid.Row="3" x:Name="Atualizar" Refreshing="AoAtualizar">
+            <CollectionView x:Name="Lista" SelectionMode="Single" SelectionChanged="AoSelecionar">
+                <CollectionView.EmptyView>
+                    <Label Text="Nenhuma categoria planejada. Toque em uma categoria para definir o valor." Padding="24" HorizontalOptions="Center" TextColor="Gray" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="14,10" ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="{Binding Nome}" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding ValorTexto}" FontAttributes="Bold" VerticalOptions="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Grid.Row="4" Text="Adicionar categoria ao orçamento" Margin="12" Clicked="AoAdicionar" />
+    </Grid>
+</ContentPage>

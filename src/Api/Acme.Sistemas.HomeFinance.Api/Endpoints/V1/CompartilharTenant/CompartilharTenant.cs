@@ -2,6 +2,7 @@ using Acme.Sistemas.Core.Mediators;
 using Acme.Sistemas.HomeFinance.Api.Config;
 using Acme.Sistemas.Infrastructure.Databases.Configuration;
 using Acme.Sistemas.Services.V1.Compartilhamento.Query.ItensDoConsentimento;
+using Acme.Sistemas.Services.V1.Compartilhamento.Query.ListarCompartilhamentos;
 
 namespace Acme.Sistemas.HomeFinance.Api.Endpoints.V1.CompartilharTenant;
 
@@ -24,6 +25,21 @@ public sealed class CompartilharTenant : IEndpoint
             })
             .RequireAuthorization()
             .WithName("ItensDoConsentimento")
+            .WithTags("Compartilhamento");
+
+        // Lista de quem tem acesso agora, para a tela de gestão e a revogação.
+        rotas.MapGet("/api/v1/compartilhamentos", async (
+                IMediator mediator,
+                IContextoRequisicao contexto,
+                CancellationToken cancellationToken) =>
+            {
+                var resultado = await mediator.SendAsync(
+                    new ListarCompartilhamentosQuery(contexto.TenantId ?? Guid.Empty), cancellationToken);
+
+                return Results.Ok(resultado.Compartilhamentos);
+            })
+            .RequireAuthorization()
+            .WithName("ListarCompartilhamentos")
             .WithTags("Compartilhamento");
 
         rotas.MapPost("/api/v1/compartilhamentos", async (

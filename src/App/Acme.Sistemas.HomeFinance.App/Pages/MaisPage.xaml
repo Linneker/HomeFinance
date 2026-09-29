@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="Acme.Sistemas.HomeFinance.App.Pages.MaisPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Mais">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="8">
+            <Button Text="Resumo do mês" Clicked="AoResumo" HorizontalOptions="Fill" />
+            <Button Text="Assinatura" Clicked="AoAssinatura" HorizontalOptions="Fill" />
+            <Button Text="Renda" Clicked="AoRenda" HorizontalOptions="Fill" />
+            <Button Text="Categorias e regras" Clicked="AoRegras" HorizontalOptions="Fill" />
+            <Button Text="Compartilhamento" Clicked="AoCompartilhamento" HorizontalOptions="Fill" />
+            <Button Text="Exportação de dados" Clicked="AoExportacao" HorizontalOptions="Fill" />
+            <Button Text="Trocar espaço" Clicked="AoTenants" HorizontalOptions="Fill" />
+            <Button Text="Sair" Clicked="AoSair" HorizontalOptions="Fill" BackgroundColor="Transparent" TextColor="{StaticResource Primary}" />
+            <Button Text="Excluir minha conta" Clicked="AoExcluir" HorizontalOptions="Fill" BackgroundColor="Transparent" TextColor="Red" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

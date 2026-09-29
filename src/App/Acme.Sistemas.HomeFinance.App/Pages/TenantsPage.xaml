@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="Acme.Sistemas.HomeFinance.App.Pages.TenantsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Trocar espaço">
+
+    <Grid RowDefinitions="Auto,*">
+        <Label Grid.Row="0" Padding="16" Text="Escolha o espaço a visualizar. Espaços recebidos podem ser somente leitura." TextColor="Gray" />
+
+        <RefreshView Grid.Row="1" x:Name="Atualizar" Refreshing="AoAtualizar">
+            <CollectionView x:Name="Lista" SelectionMode="Single" SelectionChanged="AoSelecionar">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="16,12" ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="{Binding Titulo}" FontAttributes="Bold" />
+                                <Label Text="{Binding Subtitulo}" FontSize="12" TextColor="Gray" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="1" Text="{Binding Marca}" VerticalOptions="Center" TextColor="{StaticResource Primary}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

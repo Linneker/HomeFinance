@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="Acme.Sistemas.HomeFinance.App.Pages.RegrasPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Categorias e regras">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="14">
+
+            <Label x:Name="LabelErro" TextColor="Red" IsVisible="False" />
+
+            <Label Text="Categorias" FontAttributes="Bold" FontSize="16" />
+            <CollectionView x:Name="ListaCategorias">
+                <CollectionView.EmptyView>
+                    <Label Text="Nenhuma categoria." TextColor="Gray" Padding="4" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Label Text="{Binding Nome}" Padding="8,6" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <HorizontalStackLayout Spacing="8">
+                <Entry x:Name="EntradaCategoria" Placeholder="Nova categoria" WidthRequest="220" />
+                <Button Text="Adicionar" Clicked="AoAdicionarCategoria" />
+            </HorizontalStackLayout>
+
+            <BoxView HeightRequest="1" Color="#DDD" />
+
+            <Label Text="Regras de classificação" FontAttributes="Bold" FontSize="16" />
+            <Label Text="Regras nascem ao classificar um lançamento com “criar regra”." FontSize="12" TextColor="Gray" />
+            <CollectionView x:Name="ListaRegras">
+                <CollectionView.EmptyView>
+                    <Label Text="Nenhuma regra ainda." TextColor="Gray" Padding="4" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="8,6" ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="{Binding Padrao}" FontAttributes="Bold" />
+                                <Label Text="{Binding CategoriaNome}" FontSize="12" TextColor="Gray" />
+                            </VerticalStackLayout>
+                            <Button Grid.Column="1" Text="Excluir" Clicked="AoExcluirRegra" CommandParameter="{Binding Id}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

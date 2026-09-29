@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="Acme.Sistemas.HomeFinance.App.Pages.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Entrar"
+    Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="16"
+            MaximumWidthRequest="420"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
+
+            <Label Text="HomeFinance" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center" />
+            <Label Text="Organize as finanças da sua família." HorizontalOptions="Center" TextColor="Gray" />
+
+            <Label x:Name="LabelErro" TextColor="Red" IsVisible="False" />
+
+            <VerticalStackLayout Spacing="4">
+                <Label Text="E-mail" FontAttributes="Bold" />
+                <Entry x:Name="EntradaEmail" Keyboard="Email" Placeholder="voce@exemplo.com" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Senha" FontAttributes="Bold" />
+                <Entry x:Name="EntradaSenha" IsPassword="True" Placeholder="Sua senha" />
+            </VerticalStackLayout>
+
+            <Button x:Name="BotaoEntrar" Text="Entrar" Clicked="AoEntrar" />
+            <ActivityIndicator x:Name="Ocupado" IsRunning="False" IsVisible="False" />
+
+            <Button
+                Text="Criar conta"
+                BackgroundColor="Transparent"
+                TextColor="{StaticResource Primary}"
+                Clicked="AoCriarConta" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

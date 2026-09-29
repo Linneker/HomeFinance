@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Acme.Sistemas.HomeFinance.App.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:Acme.Sistemas.HomeFinance.App.Pages"
+    Title="HomeFinance"
+    FlyoutBehavior="Disabled">
+
+    <!-- Entrada: login fica antes da área autenticada, então é o que aparece sem sessão. -->
+    <ShellContent
+        Route="login"
+        ContentTemplate="{DataTemplate pages:LoginPage}" />
+
+    <!-- Área autenticada. -->
+    <TabBar Route="main">
+        <ShellContent
+            Title="Início"
+            ContentTemplate="{DataTemplate pages:DashboardPage}"
+            Route="dashboard" />
+        <ShellContent
+            Title="Lançamentos"
+            ContentTemplate="{DataTemplate pages:LancamentosPage}"
+            Route="lancamentos" />
+        <ShellContent
+            Title="Orçamento"
+            ContentTemplate="{DataTemplate pages:OrcamentoPage}"
+            Route="orcamento" />
+        <ShellContent
+            Title="Alertas"
+            ContentTemplate="{DataTemplate pages:AlertasPage}"
+            Route="alertas" />
+        <ShellContent
+            Title="Mais"
+            ContentTemplate="{DataTemplate pages:MaisPage}"
+            Route="mais" />
+    </TabBar>
+
+</Shell>

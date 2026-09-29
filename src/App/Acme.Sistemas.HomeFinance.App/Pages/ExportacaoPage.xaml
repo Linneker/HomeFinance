@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="Acme.Sistemas.HomeFinance.App.Pages.ExportacaoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Exportação de dados">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+
+            <Label x:Name="LabelErro" TextColor="Red" IsVisible="False" />
+
+            <!-- Estado desabilitado: a exportação só existe quando a operação a habilita. -->
+            <Border x:Name="PainelIndisponivel" IsVisible="False" StrokeShape="RoundRectangle 12" Padding="16">
+                <Label x:Name="LabelIndisponivel"
+                       Text="A exportação de dados não está habilitada para a sua conta. Solicite à central de atendimento." />
+            </Border>
+
+            <VerticalStackLayout x:Name="PainelSolicitar" Spacing="12">
+                <Label Text="Baixe uma cópia dos seus dados financeiros." />
+                <Label Text="Formato" FontAttributes="Bold" />
+                <Picker x:Name="SeletorFormato" />
+                <Button x:Name="BotaoSolicitar" Text="Solicitar exportação" Clicked="AoSolicitar" />
+            </VerticalStackLayout>
+
+            <!-- Acompanhamento da geração -->
+            <Border x:Name="PainelSituacao" IsVisible="False" StrokeShape="RoundRectangle 12" Padding="16">
+                <VerticalStackLayout Spacing="10">
+                    <Label x:Name="LabelSituacao" FontAttributes="Bold" />
+                    <Label x:Name="LabelExpira" FontSize="12" TextColor="Gray" />
+                    <HorizontalStackLayout Spacing="8">
+                        <Button x:Name="BotaoAtualizar" Text="Atualizar" Clicked="AoAtualizarSituacao" />
+                        <Button x:Name="BotaoBaixar" Text="Baixar" IsVisible="False" Clicked="AoBaixar" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <ActivityIndicator x:Name="Ocupado" IsRunning="False" IsVisible="False" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

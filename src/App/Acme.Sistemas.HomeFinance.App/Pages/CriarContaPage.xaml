@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="Acme.Sistemas.HomeFinance.App.Pages.CriarContaPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Criar conta">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="16"
+            MaximumWidthRequest="420"
+            HorizontalOptions="Center">
+
+            <Label Text="Criar sua conta" FontSize="24" FontAttributes="Bold" />
+
+            <Label x:Name="LabelErro" TextColor="Red" IsVisible="False" />
+
+            <VerticalStackLayout Spacing="4">
+                <Label Text="E-mail" FontAttributes="Bold" />
+                <Entry x:Name="EntradaEmail" Keyboard="Email" Placeholder="voce@exemplo.com" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Senha" FontAttributes="Bold" />
+                <Entry x:Name="EntradaSenha" IsPassword="True" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Confirmar senha" FontAttributes="Bold" />
+                <Entry x:Name="EntradaConfirmar" IsPassword="True" />
+            </VerticalStackLayout>
+
+            <HorizontalStackLayout Spacing="8">
+                <CheckBox x:Name="AceiteTermos" />
+                <Label
+                    VerticalOptions="Center"
+                    Text="Li e aceito os termos de uso e a política de privacidade."
+                    LineBreakMode="WordWrap" />
+            </HorizontalStackLayout>
+
+            <Button x:Name="BotaoCriar" Text="Criar conta" Clicked="AoCriar" />
+            <ActivityIndicator x:Name="Ocupado" IsRunning="False" IsVisible="False" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

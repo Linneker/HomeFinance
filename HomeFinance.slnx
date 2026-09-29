@@ -14,7 +14,9 @@
     <Project Path="src/Data/Acme.Sistemas.Repository/Acme.Sistemas.Repository.csproj" />
     <Project Path="src/Data/Acme.Sistemas.ExternalIntegration/Acme.Sistemas.ExternalIntegration.csproj" />
   </Folder>
-  <Folder Name="/src/App/" />
+  <Folder Name="/src/App/">
+    <Project Path="src/App/Acme.Sistemas.HomeFinance.App/Acme.Sistemas.HomeFinance.App.csproj" />
+  </Folder>
   <Folder Name="/src/Web/" />
   <Folder Name="/test/" />
   <Folder Name="/test/Unit/">

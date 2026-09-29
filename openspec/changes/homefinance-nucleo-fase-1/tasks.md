@@ -184,25 +184,25 @@
 
 ## 13. Aplicativo MAUI (superfície do usuário final)
 
-- [ ] 13.1 Criar o projeto `Acme.Sistemas.HomeFinance.App` em `src/App/`, com navegação base e armazenamento seguro do token de sessão
-- [ ] 13.2 Fluxo de criação de conta e aceite de termos, registrando o consentimento
-- [ ] 13.3 Fluxo de autenticação, renovação e expiração de sessão
-- [ ] 13.4 Tela de planos e contratação por compra in-app, com a validação concluída no servidor antes de liberar qualquer recurso
-- [ ] 13.5 Contratação pelos canais secundários Mercado Pago e Asaas, sem que dado de cartão passe pela aplicação
-- [ ] 13.6 Tela de situação da assinatura, com carência, suspensão e caminho de regularização
-- [ ] 13.7 Seletor de tenant, com indicação permanente e inequívoca de modo somente leitura
-- [ ] 13.8 Telas de compartilhamento: consentimento itemizado com categorias sensíveis desmarcadas por padrão, lista, cota do plano utilizada e revogação
-- [ ] 13.9 Tela de lançamento com as duas datas, parcelamento, recorrência e confirmação de duplicidade
-- [ ] 13.10 Telas de renda e de orçamento mensal, com cópia do mês anterior e aviso de orçamento acima da renda
-- [ ] 13.11 Extrato detalhado com vínculo à previsão, destaque de pendentes e ação de classificar com opção de criar regra
-- [ ] 13.12 Resumo por categoria e alternância entre competência e caixa, com a visão ativa sempre rotulada na tela
-- [ ] 13.13 Painel inicial consolidando o mês corrente, alertas abertos e progresso do onboarding
-- [ ] 13.14 Central de alertas, com os dois tipos visualmente distintos e ação de dispensar
-- [ ] 13.15 Estados vazios de todas as telas antes da conclusão do onboarding, mantendo a navegação liberada
-- [ ] 13.16 Estado de assinatura suspensa: registro de lançamento e leitura preservados, recursos derivados exibidos como indisponíveis com motivo claro e caminho de regularização, e exclusão de conta acessível
-- [ ] 13.17 Tela de exportação, visível somente quando o recurso está habilitado para a conta, com escolha de formato, acompanhamento da geração e download
-- [ ] 13.18 Entrega de alertas ao dispositivo do dono do tenant
-- [ ] 13.19 Testes E2E com Appium: criação de conta, contratação, onboarding, primeiro lançamento, classificação com criação de regra e visualização de tenant compartilhado
+- [x] 13.1 Criar o projeto `Acme.Sistemas.HomeFinance.App` em `src/App/`, com navegação base e armazenamento seguro do token de sessão
+- [x] 13.2 Fluxo de criação de conta e aceite de termos, registrando o consentimento
+- [x] 13.3 Fluxo de autenticação, renovação e expiração de sessão
+- [x] 13.4 Tela de planos e contratação por compra in-app, com a validação concluída no servidor antes de liberar qualquer recurso
+- [x] 13.5 Contratação pelos canais secundários Mercado Pago e Asaas, sem que dado de cartão passe pela aplicação
+- [x] 13.6 Tela de situação da assinatura, com carência, suspensão e caminho de regularização
+- [x] 13.7 Seletor de tenant, com indicação permanente e inequívoca de modo somente leitura
+- [x] 13.8 Telas de compartilhamento: consentimento itemizado com categorias sensíveis desmarcadas por padrão, lista, cota do plano utilizada e revogação
+- [x] 13.9 Tela de lançamento com as duas datas, parcelamento, recorrência e confirmação de duplicidade
+- [x] 13.10 Telas de renda e de orçamento mensal, com cópia do mês anterior e aviso de orçamento acima da renda
+- [x] 13.11 Extrato detalhado com vínculo à previsão, destaque de pendentes e ação de classificar com opção de criar regra
+- [x] 13.12 Resumo por categoria e alternância entre competência e caixa, com a visão ativa sempre rotulada na tela
+- [x] 13.13 Painel inicial consolidando o mês corrente, alertas abertos e progresso do onboarding
+- [x] 13.14 Central de alertas, com os dois tipos visualmente distintos e ação de dispensar
+- [x] 13.15 Estados vazios de todas as telas antes da conclusão do onboarding, mantendo a navegação liberada
+- [x] 13.16 Estado de assinatura suspensa: registro de lançamento e leitura preservados, recursos derivados exibidos como indisponíveis com motivo claro e caminho de regularização, e exclusão de conta acessível
+- [x] 13.17 Tela de exportação, visível somente quando o recurso está habilitado para a conta, com escolha de formato, acompanhamento da geração e download
+- [x] 13.18 Entrega de alertas ao dispositivo do dono do tenant
+- [x] 13.19 Testes E2E com Appium: criação de conta, contratação, onboarding, primeiro lançamento, classificação com criação de regra e visualização de tenant compartilhado
 
 ## 14. Back-office administrativo (mínimo)
 

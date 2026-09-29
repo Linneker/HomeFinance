@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="Acme.Sistemas.HomeFinance.App.Pages.LancamentosPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Lançamentos">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- Barra de mês e visão -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Padding="12,8" ColumnSpacing="8">
+            <Button Grid.Column="0" Text="‹" Clicked="AoMesAnterior" WidthRequest="44" />
+            <Label Grid.Column="1" x:Name="LabelMes" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold" />
+            <Button Grid.Column="2" Text="›" Clicked="AoProximoMes" WidthRequest="44" />
+        </Grid>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Padding="12,0,12,8" ColumnSpacing="8">
+            <!-- Visão ativa sempre rotulada (13.12) -->
+            <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center">
+                <Label Text="Visão:" VerticalOptions="Center" />
+                <Label x:Name="LabelVisao" Text="Competência" FontAttributes="Bold" VerticalOptions="Center" />
+                <Switch x:Name="SwitchCaixa" Toggled="AoAlternarVisao" />
+            </HorizontalStackLayout>
+            <Button Grid.Column="1" Text="Novo" Clicked="AoNovo" />
+        </Grid>
+
+        <RefreshView Grid.Row="2" x:Name="Atualizar" Refreshing="AoAtualizar">
+            <CollectionView x:Name="Lista" SelectionMode="Single" SelectionChanged="AoSelecionar">
+                <CollectionView.EmptyView>
+                    <Label Text="Sem lançamentos neste mês." Padding="24" HorizontalOptions="Center" TextColor="Gray" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="14,10" ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Text="{Binding Descricao}" FontAttributes="Bold" />
+                                <Label Text="{Binding Detalhe}" FontSize="12" TextColor="Gray" />
+                                <Label Text="{Binding Aviso}" FontSize="12" TextColor="#B7791F" IsVisible="{Binding TemAviso}" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="1" Text="{Binding ValorTexto}" VerticalOptions="Center" FontAttributes="Bold" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

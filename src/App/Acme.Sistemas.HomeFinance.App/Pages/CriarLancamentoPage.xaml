@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="Acme.Sistemas.HomeFinance.App.Pages.CriarLancamentoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Novo lançamento">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="14" MaximumWidthRequest="520" HorizontalOptions="Fill">
+
+            <Label x:Name="LabelErro" TextColor="Red" IsVisible="False" />
+
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Descrição" FontAttributes="Bold" />
+                <Entry x:Name="EntradaDescricao" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Valor" FontAttributes="Bold" />
+                <Entry x:Name="EntradaValor" Keyboard="Numeric" Placeholder="0,00" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Categoria" FontAttributes="Bold" />
+                <Picker x:Name="SeletorCategoria" Title="(sem categoria)" />
+            </VerticalStackLayout>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <VerticalStackLayout Grid.Column="0" Spacing="4">
+                    <Label Text="Data de competência" FontAttributes="Bold" />
+                    <DatePicker x:Name="DataCompetencia" Format="dd/MM/yyyy" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                    <Label Text="Data de caixa" FontAttributes="Bold" />
+                    <DatePicker x:Name="DataCaixa" Format="dd/MM/yyyy" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <HorizontalStackLayout Spacing="8">
+                <Label Text="Recorrente (mensal)" VerticalOptions="Center" />
+                <Switch x:Name="SwitchRecorrente" Toggled="AoAlternarRecorrente" />
+            </HorizontalStackLayout>
+
+            <VerticalStackLayout x:Name="PainelParcelas" Spacing="4">
+                <Label Text="Parcelas" FontAttributes="Bold" />
+                <HorizontalStackLayout Spacing="12">
+                    <Stepper x:Name="Parcelas" Minimum="1" Maximum="60" Increment="1" Value="1" ValueChanged="AoMudarParcelas" />
+                    <Label x:Name="LabelParcelas" Text="1x" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <Button x:Name="BotaoSalvar" Text="Salvar" Clicked="AoSalvar" />
+            <ActivityIndicator x:Name="Ocupado" IsRunning="False" IsVisible="False" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
