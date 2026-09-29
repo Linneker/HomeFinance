@@ -44,6 +44,25 @@ public sealed class AssinaturaReadRepository(TransactionManager transacoes)
         return planos;
     }
 
+    public async Task<IReadOnlyList<PlanoEntity>> ListarTodosAsync(
+        CancellationToken cancellationToken)
+    {
+        await using var escopo = await transacoes.AbrirLeituraAsync(cancellationToken);
+        await using var comando = new EscopoSql(escopo.Conexao, escopo.Transacao)
+            .Comando(AssinaturaQuery.PlanosTodos);
+
+        var planos = new List<PlanoEntity>();
+
+        await using var leitor = await comando.ExecuteReaderAsync(cancellationToken);
+
+        while (await leitor.ReadAsync(cancellationToken))
+        {
+            planos.Add(LerPlano(leitor));
+        }
+
+        return planos;
+    }
+
     public async Task<PlanoEntity?> ObterPorCodigoAsync(
         string codigo,
         CancellationToken cancellationToken)

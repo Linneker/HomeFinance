@@ -1,4 +1,5 @@
 using Acme.Sistemas.Domain.Interfaces.Repository;
+using Acme.Sistemas.Repository.Repositories.V1.Administracao;
 using Acme.Sistemas.Repository.Repositories.V1.Alerta;
 using Acme.Sistemas.Repository.Repositories.V1.Assinatura;
 using Acme.Sistemas.Repository.Repositories.V1.Auditoria;
@@ -54,7 +55,11 @@ public static class RepositoryServiceCollectionExtensions
         services.AddScoped<IAssinaturaReadRepository>(sp => sp.GetRequiredService<AssinaturaReadRepository>());
         services.AddScoped<IPlanoReadRepository>(sp => sp.GetRequiredService<AssinaturaReadRepository>());
         services.AddScoped<IAssinaturaWriteRepository, AssinaturaWriteRepository>();
+        services.AddScoped<IPlanoWriteRepository, PlanoWriteRepository>();
         services.AddScoped<IDocumentoRetidoRepository, DocumentoRetidoRepository>();
+
+        services.AddScoped<IAdministradorRepository, AdministradorRepository>();
+        services.AddScoped<IAdministracaoReadRepository, AdministracaoReadRepository>();
 
         services.AddScoped<IExportacaoHabilitacaoReadRepository, ExportacaoHabilitacaoReadRepository>();
         services.AddScoped<IExportacaoHabilitacaoWriteRepository, ExportacaoHabilitacaoWriteRepository>();

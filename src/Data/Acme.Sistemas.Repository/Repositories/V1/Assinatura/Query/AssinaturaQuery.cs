@@ -17,6 +17,20 @@ internal static class AssinaturaQuery
         ORDER BY preco_mensal
         """;
 
+    /// <summary>
+    /// Todos os planos, inclusive inativos. A policy de <c>plano</c> é <c>USING (true)</c>: o
+    /// catálogo é igual para todo mundo, então a leitura completa não depende de contexto.
+    /// </summary>
+    public static string PlanosTodos => $"""
+        SELECT {ColunasPlano}
+        FROM plano
+        ORDER BY preco_mensal
+        """;
+
+    /// <summary>Upsert do plano pela função <c>SECURITY DEFINER</c> — o app não escreve o catálogo direto.</summary>
+    public const string SalvarPlano =
+        "SELECT salvar_plano(@id, @codigo, @nome, @cota, @preco, @ativo, @criadoEm)";
+
     public static string PlanoPorCodigo => $"""
         SELECT {ColunasPlano}
         FROM plano

@@ -12,6 +12,19 @@ public interface IGeradorDeToken
         Guid usuarioId,
         Guid tenantPadraoId,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Emite o token do administrador: sem tenant, com a claim de perfil.
+    /// </summary>
+    /// <remarks>
+    /// A ausência da claim de tenant padrão é o que garante que a requisição administrativa não
+    /// selecione tenant nenhum — o administrador não tem por onde chegar ao dado do cliente. A
+    /// claim de perfil é o que a política administrativa exige, e o token do usuário final não a
+    /// carrega, então uma credencial não vale no lado do outro.
+    /// </remarks>
+    Task<TokenEmitido> EmitirAdministradorAsync(
+        Guid administradorId,
+        CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -35,14 +48,37 @@ public sealed class GeradorDeToken(
     /// <summary>Claim com o tenant padrão. A seleção de outro tenant é validada por requisição.</summary>
     public const string ClaimTenantPadrao = "tenant_padrao";
 
+    /// <summary>Claim de perfil. Fonte única do nome, compartilhada com a política de autorização.</summary>
+    public const string ClaimPerfil = "perfil";
+
+    /// <summary>Valor do perfil administrativo.</summary>
+    public const string PerfilAdministrador = "administrador";
+
     private const int TamanhoMinimoChaveBytes = 64;
 
     private readonly JwtOptions _options = options.Value;
 
-    public async Task<TokenEmitido> EmitirAsync(
+    public Task<TokenEmitido> EmitirAsync(
         Guid usuarioId,
         Guid tenantPadraoId,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default) =>
+        EmitirComClaimsAsync(
+            usuarioId,
+            [new Claim(ClaimTenantPadrao, tenantPadraoId.ToString())],
+            cancellationToken);
+
+    public Task<TokenEmitido> EmitirAdministradorAsync(
+        Guid administradorId,
+        CancellationToken cancellationToken = default) =>
+        EmitirComClaimsAsync(
+            administradorId,
+            [new Claim(ClaimPerfil, PerfilAdministrador)],
+            cancellationToken);
+
+    private async Task<TokenEmitido> EmitirComClaimsAsync(
+        Guid sujeito,
+        IEnumerable<Claim> claimsExtras,
+        CancellationToken cancellationToken)
     {
         var chave = Encoding.UTF8.GetBytes(await provedorDeChave.ObterChaveAsync(cancellationToken));
 
@@ -56,6 +92,13 @@ public sealed class GeradorDeToken(
         var agora = relogio.GetUtcNow();
         var expiraEm = agora.Add(_options.ValidadeAcesso);
 
+        var claims = new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Sub, sujeito.ToString()),
+            new(JwtRegisteredClaimNames.Jti, Guid.CreateVersion7().ToString()),
+        };
+        claims.AddRange(claimsExtras);
+
         var descricao = new SecurityTokenDescriptor
         {
             Issuer = _options.Emissor,
@@ -63,12 +106,7 @@ public sealed class GeradorDeToken(
             IssuedAt = agora.UtcDateTime,
             NotBefore = agora.UtcDateTime,
             Expires = expiraEm.UtcDateTime,
-            Subject = new ClaimsIdentity(
-            [
-                new Claim(JwtRegisteredClaimNames.Sub, usuarioId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.CreateVersion7().ToString()),
-                new Claim(ClaimTenantPadrao, tenantPadraoId.ToString()),
-            ]),
+            Subject = new ClaimsIdentity(claims),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(chave), SecurityAlgorithms.HmacSha512),
         };

@@ -8,9 +8,29 @@ public interface IPlanoReadRepository
 {
     Task<IReadOnlyList<PlanoEntity>> ListarAtivosAsync(CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Todos os planos, inclusive os inativos. É a visão da operação: a listagem do cliente só
+    /// mostra o que está à venda, mas o back-office precisa ver o desativado para reativá-lo.
+    /// </summary>
+    Task<IReadOnlyList<PlanoEntity>> ListarTodosAsync(CancellationToken cancellationToken);
+
     Task<PlanoEntity?> ObterPorCodigoAsync(string codigo, CancellationToken cancellationToken);
 
     Task<PlanoEntity?> ObterPorIdAsync(Guid planoId, CancellationToken cancellationToken);
+}
+
+/// <summary>
+/// Manutenção do catálogo pela operação.
+/// </summary>
+/// <remarks>
+/// O catálogo tem INSERT/UPDATE revogados do role da aplicação — a semeadura é por migration.
+/// A gravação do back-office passa por função <c>SECURITY DEFINER</c>, e só o endpoint sob a
+/// política administrativa a alcança.
+/// </remarks>
+public interface IPlanoWriteRepository
+{
+    /// <summary>Cria o plano ou atualiza o existente de mesmo código (nome, cota, preço, situação).</summary>
+    Task SalvarAsync(PlanoEntity plano, CancellationToken cancellationToken);
 }
 
 /// <summary>Leitura da assinatura para a tela de situação.</summary>
