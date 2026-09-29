@@ -211,8 +211,8 @@
 - [x] 14.3 `Services`: Query de contas com dados de conta, situação da assinatura e plano, sem qualquer dado financeiro
 - [x] 14.4 `Services`: manutenção do catálogo de planos e de suas cotas de compartilhamento
 - [x] 14.5 `Api`: endpoints `V1` administrativos, segregados por perfil de acesso
-- [ ] 14.6 Criar o portal React em `src/Web/portal` com autenticação administrativa, listagem de contas e gestão do catálogo de planos
-- [ ] 14.7 Tela administrativa de habilitação e desabilitação da exportação por conta, com motivo obrigatório e histórico das habilitações
+- [x] 14.6 Criar o portal React em `src/Web/portal` com autenticação administrativa, listagem de contas e gestão do catálogo de planos
+- [x] 14.7 Tela administrativa de habilitação e desabilitação da exportação por conta, com motivo obrigatório e histórico das habilitações
 - [x] 14.8 Teste de integração: requisição autenticada como administrador retorna zero linhas em todas as tabelas de dado financeiro, inclusive após habilitar exportação para a conta
 - [x] 14.9 Teste de integração: credencial de administrador não autentica nos endpoints de usuário final, e vice-versa
 

@@ -1,6 +1,7 @@
 using Acme.Sistemas.Core.Mediators;
 using Acme.Sistemas.HomeFinance.Api.Config;
 using Acme.Sistemas.Infrastructure.Databases.Configuration;
+using Acme.Sistemas.Services.V1.Administracao.Query.HistoricoExportacao;
 using Acme.Sistemas.Services.V1.Exportacao.Command.DesabilitarExportacao;
 using Acme.Sistemas.Services.V1.Exportacao.Command.HabilitarExportacao;
 
@@ -51,6 +52,20 @@ public sealed class ExportacaoAdmin : IEndpoint
             })
             .RequireAuthorization(PerfilAdministrativo.Politica)
             .WithName("DesabilitarExportacao")
+            .WithTags("Exportação (admin)");
+
+        rotas.MapGet("/api/v1/admin/contas/{contaUsuarioId:guid}/exportacao/historico", async (
+                Guid contaUsuarioId,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
+            {
+                var resultado = await mediator.SendAsync(
+                    new HistoricoExportacaoQuery(contaUsuarioId), cancellationToken);
+
+                return Results.Ok(resultado.Entradas);
+            })
+            .RequireAuthorization(PerfilAdministrativo.Politica)
+            .WithName("HistoricoExportacao")
             .WithTags("Exportação (admin)");
     }
 }

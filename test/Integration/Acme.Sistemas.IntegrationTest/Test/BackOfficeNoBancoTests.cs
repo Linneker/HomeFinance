@@ -1,11 +1,14 @@
 using System.Data.Common;
 using Acme.Sistemas.Core.Security;
 using Acme.Sistemas.Domain.Entities.Administracao;
+using Acme.Sistemas.Domain.Entities.Auditoria;
 using Acme.Sistemas.Domain.Entities.Exportacao;
 using Acme.Sistemas.Domain.Entities.Tenants;
 using Acme.Sistemas.Domain.Entities.Users;
+using Acme.Sistemas.Domain.Enums;
 using Acme.Sistemas.IntegrationTest.Config;
 using Acme.Sistemas.Repository.Repositories.V1.Administracao;
+using Acme.Sistemas.Repository.Repositories.V1.Auditoria;
 using Acme.Sistemas.Repository.Repositories.V1.Exportacao;
 using Acme.Sistemas.Repository.Repositories.V1.Usuario;
 using Acme.Sistemas.Services.V1.Administracao.Command.AutenticarAdministrador;
@@ -167,6 +170,53 @@ public sealed class BackOfficeNoBancoTests(AmbienteBanco ambiente)
 
         var doTitular = await ContarAsync(escopoConta.Conexao, escopoConta.Transacao, "SELECT count(*) FROM lancamento");
         Assert.Equal(1, doTitular);
+    }
+
+    /// <summary>
+    /// O histórico de habilitação da conta é lido pela função definer, do mais recente ao mais
+    /// antigo — é o que a tela administrativa da exportação mostra.
+    /// </summary>
+    [Fact]
+    public async Task Historico_de_habilitacao_e_lido_do_mais_recente_ao_mais_antigo()
+    {
+        var contexto = new ContextoFixo();
+        var conta = await CriarContaAsync(contexto, "senha-do-cliente");
+        var administradorId = await ProvisionarAdministradorAsync("op4@homefinance.local", "senha-do-admin");
+
+        var contextoAudit = new ContextoFixo { UsuarioId = administradorId, TenantId = null, SomenteLeitura = false };
+        var auditoria = new AuditoriaRepository(ambiente.CriarGerenciador(contextoAudit));
+
+        await auditoria.RegistrarAsync(
+            new RegistroAuditoriaEntity
+            {
+                Id = Guid.CreateVersion7(),
+                Evento = EventoAuditoria.ExportacaoHabilitada,
+                ContaUsuarioId = conta.UsuarioId,
+                AutorId = administradorId,
+                Detalhe = "Requisição de acesso",
+                CriadoEm = DateTimeOffset.UtcNow.AddMinutes(-10),
+            },
+            Ct);
+
+        await auditoria.RegistrarAsync(
+            new RegistroAuditoriaEntity
+            {
+                Id = Guid.CreateVersion7(),
+                Evento = EventoAuditoria.ExportacaoDesabilitada,
+                ContaUsuarioId = conta.UsuarioId,
+                AutorId = administradorId,
+                Detalhe = "Encerramento a pedido",
+                CriadoEm = DateTimeOffset.UtcNow,
+            },
+            Ct);
+
+        var historico = await new AuditoriaReadRepository(ambiente.CriarGerenciador(contextoAudit))
+            .HistoricoExportacaoAsync(conta.UsuarioId, Ct);
+
+        Assert.Equal(2, historico.Count);
+        Assert.Equal(EventoAuditoria.ExportacaoDesabilitada, historico[0].Evento);
+        Assert.Equal("Encerramento a pedido", historico[0].Detalhe);
+        Assert.Equal(EventoAuditoria.ExportacaoHabilitada, historico[1].Evento);
     }
 
     // ------------------------------------------------------------ 14.9

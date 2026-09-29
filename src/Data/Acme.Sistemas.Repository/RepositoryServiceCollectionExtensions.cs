@@ -67,6 +67,7 @@ public static class RepositoryServiceCollectionExtensions
         services.AddScoped<IExportacaoSolicitacaoWriteRepository, ExportacaoSolicitacaoWriteRepository>();
         services.AddScoped<IExportacaoDadosReadRepository, ExportacaoDadosReadRepository>();
         services.AddScoped<IAuditoriaRepository, AuditoriaRepository>();
+        services.AddScoped<IAuditoriaReadRepository, AuditoriaReadRepository>();
 
         return services;
     }
