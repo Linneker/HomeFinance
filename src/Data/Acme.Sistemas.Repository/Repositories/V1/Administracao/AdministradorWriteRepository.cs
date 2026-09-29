@@ -7,7 +7,7 @@ using Acme.Sistemas.Repository.Repositories.V1.Administracao.Query;
 namespace Acme.Sistemas.Repository.Repositories.V1.Administracao;
 
 /// <inheritdoc cref="IAdministradorRepository"/>
-public sealed class AdministradorRepository(TransactionManager transacoes) : IAdministradorRepository
+public sealed class AdministradorWriteRepository(TransactionManager transacoes) : IAdministradorRepository
 {
     public async Task<CredenciaisAdministrativas?> ObterCredenciaisAsync(
         string email,

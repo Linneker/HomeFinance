@@ -24,6 +24,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Flags de recurso na raiz do Api (convenção do blueprint). Copiado para a saída para o
+         FeatureFlagService lê-lo em runtime; editar o arquivo (ou o ConfigMap que o monta) muda
+         o comportamento sem novo build. -->
+    <None Update="featureflags.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Service\Acme.Sistemas.Services\Acme.Sistemas.Services.csproj" />
     <ProjectReference Include="..\..\Service\Acme.Sistemas.Core\Acme.Sistemas.Core.csproj" />
     <ProjectReference Include="..\..\Service\Acme.Sistemas.Domain\Acme.Sistemas.Domain.csproj" />

@@ -12,7 +12,7 @@ namespace Acme.Sistemas.Repository.Repositories.V1.Auditoria;
 /// escrita porque é um registro que precisa estar no primário no mesmo instante do evento que o
 /// gerou.
 /// </remarks>
-public sealed class AuditoriaRepository(TransactionManager transacoes) : IAuditoriaRepository
+public sealed class AuditoriaWriteRepository(TransactionManager transacoes) : IAuditoriaRepository
 {
     public async Task RegistrarAsync(
         RegistroAuditoriaEntity registro,

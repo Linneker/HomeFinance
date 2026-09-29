@@ -56,9 +56,9 @@ public static class RepositoryServiceCollectionExtensions
         services.AddScoped<IPlanoReadRepository>(sp => sp.GetRequiredService<AssinaturaReadRepository>());
         services.AddScoped<IAssinaturaWriteRepository, AssinaturaWriteRepository>();
         services.AddScoped<IPlanoWriteRepository, PlanoWriteRepository>();
-        services.AddScoped<IDocumentoRetidoRepository, DocumentoRetidoRepository>();
+        services.AddScoped<IDocumentoRetidoRepository, DocumentoRetidoWriteRepository>();
 
-        services.AddScoped<IAdministradorRepository, AdministradorRepository>();
+        services.AddScoped<IAdministradorRepository, AdministradorWriteRepository>();
         services.AddScoped<IAdministracaoReadRepository, AdministracaoReadRepository>();
 
         services.AddScoped<IExportacaoHabilitacaoReadRepository, ExportacaoHabilitacaoReadRepository>();
@@ -66,7 +66,7 @@ public static class RepositoryServiceCollectionExtensions
         services.AddScoped<IExportacaoSolicitacaoReadRepository, ExportacaoSolicitacaoReadRepository>();
         services.AddScoped<IExportacaoSolicitacaoWriteRepository, ExportacaoSolicitacaoWriteRepository>();
         services.AddScoped<IExportacaoDadosReadRepository, ExportacaoDadosReadRepository>();
-        services.AddScoped<IAuditoriaRepository, AuditoriaRepository>();
+        services.AddScoped<IAuditoriaRepository, AuditoriaWriteRepository>();
         services.AddScoped<IAuditoriaReadRepository, AuditoriaReadRepository>();
 
         return services;

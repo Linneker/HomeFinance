@@ -218,9 +218,9 @@
 
 ## 15. Conformidade e fechamento
 
-- [ ] 15.1 Rodar `validar_estrutura.py` do blueprint Acme e corrigir todo desvio que quebre o padrão
-- [ ] 15.2 Revisar o checklist das 26 regras de validação do blueprint e registrar as lacunas de cobertura que ficarem para as fases seguintes
-- [ ] 15.3 Conferir que nenhum segredo está versionado em texto claro e que tudo resolve via OpenBao, incluindo as credenciais de loja, Mercado Pago e Asaas
-- [ ] 15.4 Publicar os dashboards de saúde no Grafana e validar métricas, logs e traces ponta a ponta
-- [ ] 15.5 Rodar a suíte completa (unitário, integração e E2E) e registrar o resultado
-- [ ] 15.6 Rodar `openspec validate "homefinance-nucleo-fase-1"` e corrigir pendências antes do arquivamento
+- [x] 15.1 Rodar `validar_estrutura.py` do blueprint Acme e corrigir todo desvio que quebre o padrão
+- [x] 15.2 Revisar o checklist das 26 regras de validação do blueprint e registrar as lacunas de cobertura que ficarem para as fases seguintes
+- [x] 15.3 Conferir que nenhum segredo está versionado em texto claro e que tudo resolve via OpenBao, incluindo as credenciais de loja, Mercado Pago e Asaas
+- [x] 15.4 Publicar os dashboards de saúde no Grafana e validar métricas, logs e traces ponta a ponta
+- [x] 15.5 Rodar a suíte completa (unitário, integração e E2E) e registrar o resultado
+- [x] 15.6 Rodar `openspec validate "homefinance-nucleo-fase-1"` e corrigir pendências antes do arquivamento

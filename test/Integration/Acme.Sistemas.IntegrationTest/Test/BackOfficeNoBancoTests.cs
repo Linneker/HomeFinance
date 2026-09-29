@@ -83,7 +83,7 @@ public sealed class BackOfficeNoBancoTests(AmbienteBanco ambiente)
         // Provisionamento fora de contexto: a função definer é o único caminho de escrita.
         var contexto = new ContextoFixo { UsuarioId = null, TenantId = null, SomenteLeitura = false };
 
-        await new AdministradorRepository(ambiente.CriarGerenciador(contexto)).ProvisionarAsync(
+        await new AdministradorWriteRepository(ambiente.CriarGerenciador(contexto)).ProvisionarAsync(
             new AdministradorEntity
             {
                 Id = administradorId,
@@ -184,7 +184,7 @@ public sealed class BackOfficeNoBancoTests(AmbienteBanco ambiente)
         var administradorId = await ProvisionarAdministradorAsync("op4@homefinance.local", "senha-do-admin");
 
         var contextoAudit = new ContextoFixo { UsuarioId = administradorId, TenantId = null, SomenteLeitura = false };
-        var auditoria = new AuditoriaRepository(ambiente.CriarGerenciador(contextoAudit));
+        var auditoria = new AuditoriaWriteRepository(ambiente.CriarGerenciador(contextoAudit));
 
         await auditoria.RegistrarAsync(
             new RegistroAuditoriaEntity
@@ -248,7 +248,7 @@ public sealed class BackOfficeNoBancoTests(AmbienteBanco ambiente)
         var conta = await CriarContaAsync(contexto, "senha-do-cliente");
 
         var handler = new AutenticarAdministradorCommandHandler(
-            new AdministradorRepository(ambiente.CriarGerenciador(contexto)),
+            new AdministradorWriteRepository(ambiente.CriarGerenciador(contexto)),
             new GeradorFalso());
 
         var resultado = await handler.HandleAsync(
@@ -273,7 +273,7 @@ public sealed class BackOfficeNoBancoTests(AmbienteBanco ambiente)
             .HandleAsync(new AutenticarCommand(conta.Email, conta.Senha), Ct);
 
         var administrador = await new AutenticarAdministradorCommandHandler(
-                new AdministradorRepository(ambiente.CriarGerenciador(contexto)),
+                new AdministradorWriteRepository(ambiente.CriarGerenciador(contexto)),
                 new GeradorFalso())
             .HandleAsync(new AutenticarAdministradorCommand("op3@homefinance.local", "senha-do-admin"), Ct);
 

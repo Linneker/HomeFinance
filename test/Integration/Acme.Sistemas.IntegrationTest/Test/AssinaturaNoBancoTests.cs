@@ -272,7 +272,7 @@ public sealed class AssinaturaNoBancoTests(AmbienteBanco ambiente)
 
         // Um documento enviado durante a suspensão fica retido e pendente.
         Ativar(contexto, ana);
-        var documentos = new DocumentoRetidoRepository(ambiente.CriarGerenciador(contexto));
+        var documentos = new DocumentoRetidoWriteRepository(ambiente.CriarGerenciador(contexto));
         await documentos.ReterAsync(
             new DocumentoRetidoEntity
             {
@@ -291,7 +291,7 @@ public sealed class AssinaturaNoBancoTests(AmbienteBanco ambiente)
         // A fila usa um serviço próprio (mediator neutro) para consultar a situação: quebra o
         // ciclo serviço → evento → handler → fila → serviço sem afrouxar nada do caminho real.
         var fila = new FilaDeDocumentosRetidos(
-            new DocumentoRetidoRepository(ambiente.CriarGerenciador(contexto)),
+            new DocumentoRetidoWriteRepository(ambiente.CriarGerenciador(contexto)),
             Servico(contexto),
             TimeProvider.System,
             NullLogger<FilaDeDocumentosRetidos>.Instance);
@@ -317,7 +317,7 @@ public sealed class AssinaturaNoBancoTests(AmbienteBanco ambiente)
 
         // Sem nenhum outro passo: acesso de volta e fila vazia.
         Assert.True(await Servico(contexto).DonoDoTenantVigenteAsync(ana.TenantId, Ct));
-        Assert.Empty(await new DocumentoRetidoRepository(ambiente.CriarGerenciador(contexto))
+        Assert.Empty(await new DocumentoRetidoWriteRepository(ambiente.CriarGerenciador(contexto))
             .PendentesAsync(Ct));
     }
 

@@ -7,7 +7,7 @@ using Acme.Sistemas.Repository.Repositories.V1.DocumentoRetido.Query;
 namespace Acme.Sistemas.Repository.Repositories.V1.DocumentoRetido;
 
 /// <inheritdoc cref="IDocumentoRetidoRepository"/>
-public sealed class DocumentoRetidoRepository(TransactionManager transacoes)
+public sealed class DocumentoRetidoWriteRepository(TransactionManager transacoes)
     : IDocumentoRetidoRepository
 {
     public async Task ReterAsync(

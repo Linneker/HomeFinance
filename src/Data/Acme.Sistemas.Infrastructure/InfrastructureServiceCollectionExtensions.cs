@@ -30,7 +30,7 @@ public static class InfrastructureServiceCollectionExtensions
         // recurso sem republicar. O arquivo é copiado para a saída pela subpasta FeatureFlags.
         services.AddSingleton<IFeatureFlagService>(_ =>
             new FeatureFlagService(
-                Path.Combine(AppContext.BaseDirectory, "FeatureFlags", "featureflags.json")));
+                Path.Combine(AppContext.BaseDirectory, "featureflags.json")));
 
         services.AddSingleton<IDataConfiguration, DataConfiguration>();
 
